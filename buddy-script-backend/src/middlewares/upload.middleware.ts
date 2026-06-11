@@ -1,7 +1,7 @@
+import multer from 'multer';
+import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
-import { randomUUID } from 'node:crypto';
-import multer from 'multer';
 import { ValidationError } from '../utils/errors.js';
 
 export const uploadsDir = path.join(process.cwd(), 'src', 'uploads');

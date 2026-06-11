@@ -1,8 +1,8 @@
 import type { ErrorRequestHandler } from 'express';
 import { z } from 'zod';
+import { logger } from '../config/logger.config.js';
 import { Prisma } from '../generated/client.js';
 import { AppError } from '../utils/errors.js';
-import { logger } from '../config/logger.config.js';
 
 interface ErrorResponseBody {
   success: false;

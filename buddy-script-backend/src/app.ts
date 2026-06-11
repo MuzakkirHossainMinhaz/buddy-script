@@ -1,15 +1,15 @@
+import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
-import helmet from 'helmet';
-import cors from 'cors';
 import session from 'express-session';
+import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
 import { redisStore } from './config/redis.config.js';
-import { uploadsDir } from './middlewares/upload.middleware.js';
+import { swaggerSpec } from './config/swagger.config.js';
+import { errorHandler } from './middlewares/error.middleware.js';
 import { requestLogger } from './middlewares/logging.middleware.js';
 import { apiRateLimiter } from './middlewares/rateLimit.middleware.js';
-import { errorHandler } from './middlewares/error.middleware.js';
-import { swaggerSpec } from './config/swagger.config.js';
+import { uploadsDir } from './middlewares/upload.middleware.js';
 import routes from './routes/index.js';
 
 const app = express();
@@ -28,8 +28,8 @@ const trustProxy = process.env.TRUST_PROXY
   ? process.env.TRUST_PROXY === 'false'
     ? false
     : process.env.TRUST_PROXY === 'true'
-    ? 1
-    : Number(process.env.TRUST_PROXY)
+      ? 1
+      : Number(process.env.TRUST_PROXY)
   : false;
 app.set('trust proxy', trustProxy);
 

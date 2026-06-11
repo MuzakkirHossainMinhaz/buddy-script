@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { logger } from '../config/logger.config.js';
 
 const SENSITIVE_HEADERS = new Set(['authorization', 'cookie', 'set-cookie']);

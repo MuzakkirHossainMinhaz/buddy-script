@@ -1,5 +1,5 @@
-import 'express-session';
 import 'express-serve-static-core';
+import 'express-session';
 
 declare module 'express-session' {
   interface SessionData {

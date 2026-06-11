@@ -13,14 +13,14 @@ const prisma = new PrismaClient({
   adapter,
   log: isDevelopment
     ? [
-        { emit: 'event', level: 'query' },
-        { emit: 'event', level: 'error' },
-        { emit: 'event', level: 'warn' },
-      ]
+      { emit: 'event', level: 'query' },
+      { emit: 'event', level: 'error' },
+      { emit: 'event', level: 'warn' },
+    ]
     : [
-        { emit: 'event', level: 'error' },
-        { emit: 'event', level: 'warn' },
-      ],
+      { emit: 'event', level: 'error' },
+      { emit: 'event', level: 'warn' },
+    ],
 } as any);
 
 prisma.$on('error' as never, (event: any) => {
@@ -53,4 +53,5 @@ async function disconnectDatabase(): Promise<void> {
   }
 }
 
-export { prisma, disconnectDatabase };
+export { disconnectDatabase, prisma };
+

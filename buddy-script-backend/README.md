@@ -32,14 +32,14 @@ npm run prisma:generate
 npm run dev
 ```
 
-The API starts on `http://localhost:3000` by default.
+The API starts on `http://localhost:5000` by default.
 
 ## Environment Variables
 
 | Variable | Required | Description |
 | --- | --- | --- |
 | `NODE_ENV` | No | `development` or `production` |
-| `PORT` | No | API port, default `3000` |
+| `PORT` | No | API port, default `5000` |
 | `DATABASE_URL` | Yes in production | PostgreSQL connection string |
 | `REDIS_URL` | Yes in production | Redis connection string |
 | `SESSION_SECRET` | Yes in production | Session signing secret |

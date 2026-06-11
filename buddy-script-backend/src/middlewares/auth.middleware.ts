@@ -1,7 +1,7 @@
-import type { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { prisma } from '../config/database.js';
-import { UnauthorizedError } from '../utils/errors.js';
 import { logger } from '../config/logger.config.js';
+import { UnauthorizedError } from '../utils/errors.js';
 
 interface AuthenticatedUser {
   id: bigint;
@@ -66,10 +66,6 @@ export async function requireAuth(
 
     if (!user) {
       throw new UnauthorizedError('Authentication required');
-    }
-
-    if (!user.isActive) {
-      throw new UnauthorizedError('Account has been deactivated');
     }
 
     req.user = user;

@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import app from './app.js';
+import { disconnectDatabase } from './config/database.js';
 import { logger } from './config/logger.config.js';
 import { connectRedis, disconnectRedis } from './config/redis.config.js';
-import { disconnectDatabase } from './config/database.js';
 
 // BigInt JSON serialization safety net
 declare global {
@@ -15,7 +15,7 @@ BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
-const PORT = parseInt(process.env.PORT || '3000', 10);
+const PORT = parseInt(process.env.PORT || '5000', 10);
 
 async function startServer(): Promise<void> {
   try {

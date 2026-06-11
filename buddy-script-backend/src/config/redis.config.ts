@@ -1,6 +1,6 @@
-import { createClient, type RedisClientType } from 'redis';
-import { Redis } from 'ioredis';
 import { RedisStore } from 'connect-redis';
+import { Redis } from 'ioredis';
+import { createClient, type RedisClientType } from 'redis';
 import { logger } from './logger.config.js';
 
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
@@ -73,4 +73,4 @@ async function disconnectRedis(): Promise<void> {
   }
 }
 
-export { redisClient, ioRedisClient, redisStore, connectRedis, disconnectRedis };
+export { connectRedis, disconnectRedis, ioRedisClient, redisClient, redisStore };
