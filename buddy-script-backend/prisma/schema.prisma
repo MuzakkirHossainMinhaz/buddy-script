@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PostPrivacy {
+  public
+  private
+}
+
+enum LikeTargetType {
+  post
+  comment
+  reply
+}
+
+model User {
+  id             BigInt    @id @default(autoincrement())
+  uuid           String    @unique @default(uuid())
+  firstName      String    @map("first_name")
+  lastName       String    @map("last_name")
+  email          String    @unique
+  passwordHash   String    @map("password_hash")
+  isActive       Boolean   @default(true) @map("is_active")
+  isVerified     Boolean   @default(false) @map("is_verified")
+  lastLoginAt    DateTime? @map("last_login_at")
+  lastLoginIp    String?   @map("last_login_ip")
+  loginAttempts  Int       @default(0) @map("login_attempts")
+  lockedUntil    DateTime? @map("locked_until")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  posts          Post[]
+  comments       Comment[]
+  replies        Reply[]
+  likes          Like[]
+
+  @@index([email])
+  @@index([uuid])
+  @@index([createdAt])
+  @@map("users")
+}
+
+model Post {
+  id           BigInt    @id @default(autoincrement())
+  uuid         String    @unique @default(uuid())
+  userId       BigInt    @map("user_id")
+  content      String    @db.Text
+  imageUrl     String?   @map("image_url") @db.Text
+  privacyType  PostPrivacy @default(public) @map("privacy_type")
+  isDeleted    Boolean   @default(false) @map("is_deleted")
+  likeCount    BigInt    @default(0) @map("like_count")
+  commentCount BigInt    @default(0) @map("comment_count")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments     Comment[]
+
+  @@index([userId])
+  @@index([privacyType, isDeleted, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([userId, isDeleted, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([createdAt(sort: Desc), id(sort: Desc)])
+  @@map("posts")
+}
+
+model Comment {
+  id           BigInt    @id @default(autoincrement())
+  uuid         String    @unique @default(uuid())
+  postId       BigInt    @map("post_id")
+  userId       BigInt    @map("user_id")
+  content      String    @db.Text
+  isDeleted    Boolean   @default(false) @map("is_deleted")
+  likeCount    BigInt    @default(0) @map("like_count")
+  replyCount   BigInt    @default(0) @map("reply_count")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  post         Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replies      Reply[]
+
+  @@index([postId, isDeleted, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([userId])
+  @@map("comments")
+}
+
+model Reply {
+  id            BigInt    @id @default(autoincrement())
+  uuid          String    @unique @default(uuid())
+  commentId     BigInt    @map("comment_id")
+  userId        BigInt    @map("user_id")
+  parentReplyId BigInt?   @map("parent_reply_id")
+  content       String    @db.Text
+  isDeleted     Boolean   @default(false) @map("is_deleted")
+  likeCount     BigInt    @default(0) @map("like_count")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  comment       Comment   @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentReply   Reply?    @relation("ReplyToReply", fields: [parentReplyId], references: [id])
+  childReplies  Reply[]   @relation("ReplyToReply")
+
+  @@index([commentId, isDeleted, createdAt(sort: Asc), id(sort: Asc)])
+  @@index([userId])
+  @@index([parentReplyId])
+  @@map("replies")
+}
+
+model Like {
+  id          BigInt    @id @default(autoincrement())
+  userId      BigInt    @map("user_id")
+  targetType  LikeTargetType @map("target_type")
+  targetId    BigInt    @map("target_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, targetType, targetId])
+  @@index([targetType, targetId, createdAt(sort: Desc), id(sort: Desc)])
+  @@index([userId])
+  @@map("likes")
+}
