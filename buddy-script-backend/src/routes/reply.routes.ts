@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import * as replyController from '../controllers/reply.controller.js';
-import { requireAuth, optionalAuth } from '../middlewares/auth.middleware.js';
+import { requireAuth } from '../middlewares/auth.middleware.js';
 import { validate } from '../middlewares/validation.middleware.js';
-import { CreateReplySchema, UpdateReplySchema } from '../schemas/reply.schema.js';
 import { PaginationQuerySchema } from '../schemas/pagination.schema.js';
+import { CreateReplySchema, UpdateReplySchema } from '../schemas/reply.schema.js';
 
 // Router for comment-scoped reply operations (mounted at /api/comments/:commentId/replies)
 const commentReplyRouter = Router({ mergeParams: true });
@@ -55,7 +55,7 @@ const commentReplyRouter = Router({ mergeParams: true });
  *                 meta:
  *                   $ref: '#/components/schemas/CursorPaginationMeta'
  */
-commentReplyRouter.get('/', optionalAuth, validate(PaginationQuerySchema, 'query'), replyController.getReplies);
+commentReplyRouter.get('/', requireAuth, validate(PaginationQuerySchema, 'query'), replyController.getReplies);
 
 /**
  * @swagger
@@ -310,7 +310,7 @@ replyRouter.delete('/:replyId/like', requireAuth, replyController.unlikeReply);
  */
 replyRouter.get(
   '/:replyId/likes',
-  optionalAuth,
+  requireAuth,
   validate(PaginationQuerySchema, 'query'),
   replyController.getReplyLikers,
 );

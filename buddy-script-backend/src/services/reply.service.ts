@@ -15,7 +15,6 @@ const authorSelect = {
 } as const;
 
 export class ReplyService {
-  // ------------------------------------------------ get replies for a comment
   /**
    * Paginated replies for a given comment.
    *
@@ -55,7 +54,6 @@ export class ReplyService {
     return { replies: repliesWithLike, nextCursor };
   }
 
-  // ------------------------------------------------------------ create reply
   /**
    * Create a reply on a comment, optionally nested under a parent reply.
    *
@@ -120,7 +118,6 @@ export class ReplyService {
     return reply;
   }
 
-  // ------------------------------------------------------------ update reply
   /**
    * Update the content of a reply. Only the author may update.
    *
@@ -152,7 +149,6 @@ export class ReplyService {
     return updated;
   }
 
-  // ------------------------------------------------------------ delete reply
   /**
    * Soft-delete a reply and decrement the parent comment's `replyCount`.
    *
@@ -180,8 +176,7 @@ export class ReplyService {
     logger.info('Reply soft-deleted', { replyId: reply.id.toString() });
   }
 
-  // ============================================================ private helpers
-
+  // Private Helper Functions
   /**
    * Batch-check which items the current user has liked and attach
    * an `isLikedByMe` flag to each item.

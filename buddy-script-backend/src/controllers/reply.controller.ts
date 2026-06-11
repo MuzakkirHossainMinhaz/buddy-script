@@ -1,15 +1,11 @@
 import { Request, Response } from 'express';
-import { replyService } from '../services/reply.service.js';
 import { likeService } from '../services/like.service.js';
+import { replyService } from '../services/reply.service.js';
 import {
+  formatCursorPaginationMeta,
   formatReplyResponse,
   formatUserResponse,
-  formatCursorPaginationMeta,
 } from '../utils/helpers.js';
-
-interface AuthenticatedRequest extends Request {
-  user: NonNullable<Request['user']>;
-}
 
 type SortOrder = 'newest' | 'oldest';
 
