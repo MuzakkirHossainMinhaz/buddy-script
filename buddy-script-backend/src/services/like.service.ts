@@ -22,7 +22,6 @@ type TransactionClient = Parameters<
 >[0];
 
 export class LikeService {
-  // -------------------------------------------------------------------- like
   /**
    * Like a post, comment, or reply.
    *
@@ -68,7 +67,6 @@ export class LikeService {
     return { liked: true, likeCount: newCount };
   }
 
-  // ------------------------------------------------------------------ unlike
   /**
    * Remove a like from a post, comment, or reply.
    *
@@ -112,7 +110,6 @@ export class LikeService {
     return { liked: false, likeCount: newCount };
   }
 
-  // -------------------------------------------------------------- get likers
   /**
    * Paginated list of users who liked a given target.
    *
@@ -153,7 +150,7 @@ export class LikeService {
     return { users, nextCursor };
   }
 
-  // ============================================================ private helpers
+  // Private Helpers
 
   /**
    * Resolve a target's public UUID to its internal BigInt ID and current

@@ -1,16 +1,12 @@
 import { Request, Response } from 'express';
-import { postService } from '../services/post.service.js';
+import type { PostPrivacy } from '../generated/enums.js';
 import { likeService } from '../services/like.service.js';
+import { postService } from '../services/post.service.js';
 import {
+  formatCursorPaginationMeta,
   formatPostResponse,
   formatUserResponse,
-  formatCursorPaginationMeta,
 } from '../utils/helpers.js';
-import type { PostPrivacy } from '../generated/enums.js';
-
-interface AuthenticatedRequest extends Request {
-  user: NonNullable<Request['user']>;
-}
 
 type SortOrder = 'newest' | 'oldest';
 

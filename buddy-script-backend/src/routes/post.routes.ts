@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import * as postController from '../controllers/post.controller.js';
-import { requireAuth, optionalAuth } from '../middlewares/auth.middleware.js';
-import { validate } from '../middlewares/validation.middleware.js';
+import { requireAuth } from '../middlewares/auth.middleware.js';
 import { uploadPostImage } from '../middlewares/upload.middleware.js';
-import { CreatePostSchema, UpdatePostSchema } from '../schemas/post.schema.js';
+import { validate } from '../middlewares/validation.middleware.js';
 import { PaginationQuerySchema } from '../schemas/pagination.schema.js';
+import { CreatePostSchema, UpdatePostSchema } from '../schemas/post.schema.js';
 
 const router = Router();
 
@@ -51,7 +51,7 @@ const router = Router();
  *                 meta:
  *                   $ref: '#/components/schemas/CursorPaginationMeta'
  */
-router.get('/', optionalAuth, validate(PaginationQuerySchema, 'query'), postController.getPublicFeed);
+router.get('/', requireAuth, validate(PaginationQuerySchema, 'query'), postController.getPublicFeed);
 
 /**
  * @swagger
@@ -179,7 +179,7 @@ router.post(
  *       404:
  *         description: Post not found
  */
-router.get('/:postId', optionalAuth, postController.getPost);
+router.get('/:postId', requireAuth, postController.getPost);
 
 /**
  * @swagger
@@ -382,7 +382,7 @@ router.delete('/:postId/like', requireAuth, postController.unlikePost);
  */
 router.get(
   '/:postId/likes',
-  optionalAuth,
+  requireAuth,
   validate(PaginationQuerySchema, 'query'),
   postController.getPostLikers,
 );

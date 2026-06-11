@@ -16,7 +16,6 @@ const authorSelect = {
 } as const;
 
 export class PostService {
-  // -------------------------------------------------------------- public feed
   /**
    * Paginated feed of all public, non-deleted posts.
    *
@@ -51,7 +50,6 @@ export class PostService {
     return { posts: postsWithLike, nextCursor };
   }
 
-  // ---------------------------------------------------------------- my posts
   /**
    * Paginated list of the authenticated user's own posts (public + private).
    */
@@ -83,7 +81,6 @@ export class PostService {
     return { posts: postsWithLike, nextCursor };
   }
 
-  // --------------------------------------------------------- get post by uuid
   /**
    * Fetch a single post by its public UUID.
    *
@@ -103,7 +100,6 @@ export class PostService {
     return { ...post, isLikedByMe };
   }
 
-  // ------------------------------------------------------------- create post
   /**
    * Create a new post for the given user.
    * Content is sanitized before persisting.
@@ -132,7 +128,6 @@ export class PostService {
     return post;
   }
 
-  // ------------------------------------------------------------- update post
   /**
    * Update an existing post. Only the author may update.
    *
@@ -171,7 +166,6 @@ export class PostService {
     return updated;
   }
 
-  // ------------------------------------------------------------- delete post
   /**
    * Soft-delete a post. Only the author may delete.
    *
@@ -196,7 +190,7 @@ export class PostService {
     logger.info('Post soft-deleted', { postId: post.id.toString() });
   }
 
-  // ============================================================ private helpers
+  // Private Helpers Functions
 
   /**
    * Attach an `isLikedByMe` boolean to every item in a list.

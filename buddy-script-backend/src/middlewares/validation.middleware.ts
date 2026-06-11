@@ -30,10 +30,20 @@ export const validate = (schema: z.ZodType, target: ValidationTarget = 'body') =
         req.body = result.data;
         break;
       case 'query':
-        (req as unknown as Record<string, any>).query = result.data;
+        Object.defineProperty(req, 'query', {
+          value: result.data,
+          writable: true,
+          configurable: true,
+          enumerable: true,
+        });
         break;
       case 'params':
-        (req as unknown as Record<string, any>).params = result.data;
+        Object.defineProperty(req, 'params', {
+          value: result.data,
+          writable: true,
+          configurable: true,
+          enumerable: true,
+        });
         break;
     }
 
