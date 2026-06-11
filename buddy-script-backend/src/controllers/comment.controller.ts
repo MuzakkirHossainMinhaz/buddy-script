@@ -3,13 +3,9 @@ import { commentService } from '../services/comment.service.js';
 import { likeService } from '../services/like.service.js';
 import {
   formatCommentResponse,
-  formatUserResponse,
   formatCursorPaginationMeta,
+  formatUserResponse,
 } from '../utils/helpers.js';
-
-interface AuthenticatedRequest extends Request {
-  user: NonNullable<Request['user']>;
-}
 
 type SortOrder = 'newest' | 'oldest';
 

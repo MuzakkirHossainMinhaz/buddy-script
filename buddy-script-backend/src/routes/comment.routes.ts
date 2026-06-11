@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as commentController from '../controllers/comment.controller.js';
-import { requireAuth, optionalAuth } from '../middlewares/auth.middleware.js';
+import { requireAuth } from '../middlewares/auth.middleware.js';
 import { validate } from '../middlewares/validation.middleware.js';
 import { CreateCommentSchema, UpdateCommentSchema } from '../schemas/comment.schema.js';
 import { PaginationQuerySchema } from '../schemas/pagination.schema.js';
@@ -55,7 +55,7 @@ const postCommentRouter = Router({ mergeParams: true });
  *                 meta:
  *                   $ref: '#/components/schemas/CursorPaginationMeta'
  */
-postCommentRouter.get('/', optionalAuth, validate(PaginationQuerySchema, 'query'), commentController.getComments);
+postCommentRouter.get('/', requireAuth, validate(PaginationQuerySchema, 'query'), commentController.getComments);
 
 /**
  * @swagger
@@ -306,9 +306,9 @@ commentRouter.delete('/:commentId/like', requireAuth, commentController.unlikeCo
  */
 commentRouter.get(
   '/:commentId/likes',
-  optionalAuth,
+  requireAuth,
   validate(PaginationQuerySchema, 'query'),
   commentController.getCommentLikers,
 );
 
-export { postCommentRouter, commentRouter };
+export { commentRouter, postCommentRouter };

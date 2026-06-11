@@ -15,7 +15,6 @@ const authorSelect = {
 } as const;
 
 export class CommentService {
-  // ------------------------------------------------- get comments for a post
   /**
    * Paginated comments for a given post.
    *
@@ -64,7 +63,6 @@ export class CommentService {
     return { comments: commentsWithLike, nextCursor };
   }
 
-  // --------------------------------------------------------- create comment
   /**
    * Add a comment to a post.
    *
@@ -109,7 +107,6 @@ export class CommentService {
     return comment;
   }
 
-  // --------------------------------------------------------- update comment
   /**
    * Update the content of a comment. Only the author may update.
    *
@@ -138,7 +135,6 @@ export class CommentService {
     return updated;
   }
 
-  // --------------------------------------------------------- delete comment
   /**
    * Soft-delete a comment and decrement the parent post's `commentCount`.
    *
@@ -166,7 +162,7 @@ export class CommentService {
     logger.info('Comment soft-deleted', { commentId: comment.id.toString() });
   }
 
-  // ============================================================ private helpers
+  // Private Helper Functions
 
   /**
    * Batch-check which items the current user has liked and attach
