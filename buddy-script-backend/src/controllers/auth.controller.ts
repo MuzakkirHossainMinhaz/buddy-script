@@ -2,16 +2,6 @@ import { Request, Response } from 'express';
 import { authService } from '../services/auth.service.js';
 import { formatUserResponse } from '../utils/helpers.js';
 
-declare module 'express-session' {
-  interface SessionData {
-    userId: string;
-  }
-}
-
-interface AuthenticatedRequest extends Request {
-  user: NonNullable<Request['user']>;
-}
-
 export const register = async (req: Request, res: Response): Promise<void> => {
   const user = await authService.register(req.body);
 

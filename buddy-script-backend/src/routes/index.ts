@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import authRoutes from './auth.routes.js';
+import { commentRouter, postCommentRouter } from './comment.routes.js';
 import postRoutes from './post.routes.js';
-import { postCommentRouter, commentRouter } from './comment.routes.js';
 import { commentReplyRouter, replyRouter } from './reply.routes.js';
 
 const router = Router();

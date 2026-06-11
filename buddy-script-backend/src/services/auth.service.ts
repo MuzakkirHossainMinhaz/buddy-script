@@ -27,7 +27,6 @@ const userSelectWithoutPassword = {
 } as const;
 
 export class AuthService {
-  // ------------------------------------------------------------------ register
   /**
    * Register a new user.
    *
@@ -69,7 +68,6 @@ export class AuthService {
     return user;
   }
 
-  // -------------------------------------------------------------------- login
   /**
    * Authenticate a user with email & password.
    *
@@ -145,7 +143,6 @@ export class AuthService {
     return updatedUser;
   }
 
-  // ------------------------------------------------------------- getUserById
   /**
    * Fetch a user by internal BigInt ID.
    *
@@ -164,7 +161,6 @@ export class AuthService {
     return user;
   }
 
-  // ----------------------------------------------------------- getUserByUuid
   /**
    * Fetch a user by public UUID.
    *
