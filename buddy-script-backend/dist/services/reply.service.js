@@ -1,0 +1,160 @@
+import { prisma } from '../config/database.js';
+import { logger } from '../config/logger.config.js';
+import { ForbiddenError, NotFoundError, ValidationError } from '../utils/errors.js';
+import { sanitizeContent } from '../utils/helpers.js';
+import { visibilityService } from './visibility.service.js';
+const authorSelect = {
+    id: true,
+    uuid: true,
+    firstName: true,
+    lastName: true,
+};
+export class ReplyService {
+    /**
+     * Paginated replies for a given comment.
+     *
+     * @throws {NotFoundError} if the comment doesn't exist or is deleted
+     */
+    async getRepliesByComment(commentUuid, limit, sort, cursor, currentUserId) {
+        const comment = await visibilityService.getVisibleCommentByUuid(commentUuid, currentUserId);
+        const orderBy = sort === 'oldest' ? 'asc' : 'desc';
+        const results = await prisma.reply.findMany({
+            where: { commentId: comment.id, isDeleted: false },
+            include: {
+                user: { select: authorSelect },
+                parentReply: { select: { uuid: true } },
+            },
+            orderBy: [{ createdAt: orderBy }, { id: orderBy }],
+            cursor: cursor ? { uuid: cursor } : undefined,
+            skip: cursor ? 1 : 0,
+            take: limit + 1,
+        });
+        const replies = results.slice(0, limit);
+        const nextCursor = results.length > limit ? replies.at(-1)?.uuid ?? null : null;
+        const repliesWithLike = await this.attachIsLikedByMe(replies, 'reply', currentUserId);
+        return { replies: repliesWithLike, nextCursor };
+    }
+    /**
+     * Create a reply on a comment, optionally nested under a parent reply.
+     *
+     * Runs inside a transaction so the comment's `replyCount` stays in sync.
+     *
+     * @param commentUuid    - UUID of the comment being replied to
+     * @param userId         - BigInt ID of the replying user
+     * @param content        - Raw reply text (will be sanitized)
+     * @param parentReplyUuid - Optional UUID of a parent reply for nesting
+     *
+     * @throws {NotFoundError} if the comment or parent reply doesn't exist / is deleted
+     */
+    async createReply(commentUuid, userId, content, parentReplyUuid) {
+        const comment = await visibilityService.getVisibleCommentByUuid(commentUuid, userId);
+        let parentReplyId = null;
+        if (parentReplyUuid) {
+            const parentReply = await visibilityService.getVisibleReplyByUuid(parentReplyUuid, userId);
+            if (parentReply.commentId !== comment.id) {
+                throw new NotFoundError('Parent reply');
+            }
+            if (parentReply.parentReplyId !== null) {
+                throw new ValidationError('Maximum reply depth of 3 layers reached');
+            }
+            parentReplyId = parentReply.id;
+        }
+        const sanitized = sanitizeContent(content);
+        const reply = await prisma.$transaction(async (tx) => {
+            const created = await tx.reply.create({
+                data: {
+                    commentId: comment.id,
+                    userId,
+                    content: sanitized,
+                    parentReplyId,
+                },
+                include: {
+                    user: { select: authorSelect },
+                    parentReply: { select: { uuid: true } },
+                },
+            });
+            await tx.comment.update({
+                where: { id: comment.id },
+                data: { replyCount: { increment: 1 } },
+            });
+            return created;
+        });
+        logger.info('Reply created', {
+            replyId: reply.id.toString(),
+            commentId: comment.id.toString(),
+        });
+        return reply;
+    }
+    /**
+     * Update the content of a reply. Only the author may update.
+     *
+     * @throws {NotFoundError}  if the reply doesn't exist or is deleted
+     * @throws {ForbiddenError} if the caller is not the author
+     */
+    async updateReply(replyUuid, userId, content) {
+        const reply = await visibilityService.getVisibleReplyByUuid(replyUuid, userId);
+        if (reply.userId !== userId) {
+            throw new ForbiddenError('You can only update your own replies');
+        }
+        const sanitized = sanitizeContent(content);
+        const updated = await prisma.reply.update({
+            where: { id: reply.id },
+            data: { content: sanitized },
+            include: {
+                user: { select: authorSelect },
+                parentReply: { select: { uuid: true } },
+            },
+        });
+        logger.info('Reply updated', { replyId: reply.id.toString() });
+        return updated;
+    }
+    /**
+     * Soft-delete a reply and decrement the parent comment's `replyCount`.
+     *
+     * @throws {NotFoundError}  if the reply doesn't exist or is already deleted
+     * @throws {ForbiddenError} if the caller is not the author
+     */
+    async deleteReply(replyUuid, userId) {
+        const reply = await visibilityService.getVisibleReplyByUuid(replyUuid, userId);
+        if (reply.userId !== userId) {
+            throw new ForbiddenError('You can only delete your own replies');
+        }
+        await prisma.$transaction(async (tx) => {
+            await tx.reply.update({
+                where: { id: reply.id },
+                data: { isDeleted: true },
+            });
+            await tx.comment.update({
+                where: { id: reply.commentId },
+                data: { replyCount: { decrement: 1 } },
+            });
+        });
+        logger.info('Reply soft-deleted', { replyId: reply.id.toString() });
+    }
+    // Private Helper Functions
+    /**
+     * Batch-check which items the current user has liked and attach
+     * an `isLikedByMe` flag to each item.
+     */
+    async attachIsLikedByMe(items, targetType, currentUserId) {
+        if (!currentUserId || items.length === 0) {
+            return items.map((item) => ({ ...item, isLikedByMe: false }));
+        }
+        const targetIds = items.map((item) => item.id);
+        const likes = await prisma.like.findMany({
+            where: {
+                userId: currentUserId,
+                targetType,
+                targetId: { in: targetIds },
+            },
+            select: { targetId: true },
+        });
+        const likedSet = new Set(likes.map((l) => l.targetId));
+        return items.map((item) => ({
+            ...item,
+            isLikedByMe: likedSet.has(item.id),
+        }));
+    }
+}
+export const replyService = new ReplyService();
+//# sourceMappingURL=reply.service.js.map

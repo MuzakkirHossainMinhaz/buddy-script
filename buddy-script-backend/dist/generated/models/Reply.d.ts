@@ -1,0 +1,1859 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model Reply
+ *
+ */
+export type ReplyModel = runtime.Types.Result.DefaultSelection<Prisma.$ReplyPayload>;
+export type AggregateReply = {
+    _count: ReplyCountAggregateOutputType | null;
+    _avg: ReplyAvgAggregateOutputType | null;
+    _sum: ReplySumAggregateOutputType | null;
+    _min: ReplyMinAggregateOutputType | null;
+    _max: ReplyMaxAggregateOutputType | null;
+};
+export type ReplyAvgAggregateOutputType = {
+    id: number | null;
+    commentId: number | null;
+    userId: number | null;
+    parentReplyId: number | null;
+    likeCount: number | null;
+};
+export type ReplySumAggregateOutputType = {
+    id: bigint | null;
+    commentId: bigint | null;
+    userId: bigint | null;
+    parentReplyId: bigint | null;
+    likeCount: bigint | null;
+};
+export type ReplyMinAggregateOutputType = {
+    id: bigint | null;
+    uuid: string | null;
+    commentId: bigint | null;
+    userId: bigint | null;
+    parentReplyId: bigint | null;
+    content: string | null;
+    isDeleted: boolean | null;
+    likeCount: bigint | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type ReplyMaxAggregateOutputType = {
+    id: bigint | null;
+    uuid: string | null;
+    commentId: bigint | null;
+    userId: bigint | null;
+    parentReplyId: bigint | null;
+    content: string | null;
+    isDeleted: boolean | null;
+    likeCount: bigint | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type ReplyCountAggregateOutputType = {
+    id: number;
+    uuid: number;
+    commentId: number;
+    userId: number;
+    parentReplyId: number;
+    content: number;
+    isDeleted: number;
+    likeCount: number;
+    createdAt: number;
+    updatedAt: number;
+    _all: number;
+};
+export type ReplyAvgAggregateInputType = {
+    id?: true;
+    commentId?: true;
+    userId?: true;
+    parentReplyId?: true;
+    likeCount?: true;
+};
+export type ReplySumAggregateInputType = {
+    id?: true;
+    commentId?: true;
+    userId?: true;
+    parentReplyId?: true;
+    likeCount?: true;
+};
+export type ReplyMinAggregateInputType = {
+    id?: true;
+    uuid?: true;
+    commentId?: true;
+    userId?: true;
+    parentReplyId?: true;
+    content?: true;
+    isDeleted?: true;
+    likeCount?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type ReplyMaxAggregateInputType = {
+    id?: true;
+    uuid?: true;
+    commentId?: true;
+    userId?: true;
+    parentReplyId?: true;
+    content?: true;
+    isDeleted?: true;
+    likeCount?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type ReplyCountAggregateInputType = {
+    id?: true;
+    uuid?: true;
+    commentId?: true;
+    userId?: true;
+    parentReplyId?: true;
+    content?: true;
+    isDeleted?: true;
+    likeCount?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type ReplyAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which Reply to aggregate.
+     */
+    where?: Prisma.ReplyWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of Replies to fetch.
+     */
+    orderBy?: Prisma.ReplyOrderByWithRelationInput | Prisma.ReplyOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.ReplyWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` Replies from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` Replies.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned Replies
+    **/
+    _count?: true | ReplyCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: ReplyAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: ReplySumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReplyMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReplyMaxAggregateInputType;
+};
+export type GetReplyAggregateType<T extends ReplyAggregateArgs> = {
+    [P in keyof T & keyof AggregateReply]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateReply[P]> : Prisma.GetScalarType<T[P], AggregateReply[P]>;
+};
+export type ReplyGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.ReplyWhereInput;
+    orderBy?: Prisma.ReplyOrderByWithAggregationInput | Prisma.ReplyOrderByWithAggregationInput[];
+    by: Prisma.ReplyScalarFieldEnum[] | Prisma.ReplyScalarFieldEnum;
+    having?: Prisma.ReplyScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: ReplyCountAggregateInputType | true;
+    _avg?: ReplyAvgAggregateInputType;
+    _sum?: ReplySumAggregateInputType;
+    _min?: ReplyMinAggregateInputType;
+    _max?: ReplyMaxAggregateInputType;
+};
+export type ReplyGroupByOutputType = {
+    id: bigint;
+    uuid: string;
+    commentId: bigint;
+    userId: bigint;
+    parentReplyId: bigint | null;
+    content: string;
+    isDeleted: boolean;
+    likeCount: bigint;
+    createdAt: Date;
+    updatedAt: Date;
+    _count: ReplyCountAggregateOutputType | null;
+    _avg: ReplyAvgAggregateOutputType | null;
+    _sum: ReplySumAggregateOutputType | null;
+    _min: ReplyMinAggregateOutputType | null;
+    _max: ReplyMaxAggregateOutputType | null;
+};
+export type GetReplyGroupByPayload<T extends ReplyGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<ReplyGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof ReplyGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], ReplyGroupByOutputType[P]> : Prisma.GetScalarType<T[P], ReplyGroupByOutputType[P]>;
+}>>;
+export type ReplyWhereInput = {
+    AND?: Prisma.ReplyWhereInput | Prisma.ReplyWhereInput[];
+    OR?: Prisma.ReplyWhereInput[];
+    NOT?: Prisma.ReplyWhereInput | Prisma.ReplyWhereInput[];
+    id?: Prisma.BigIntFilter<"Reply"> | bigint | number;
+    uuid?: Prisma.StringFilter<"Reply"> | string;
+    commentId?: Prisma.BigIntFilter<"Reply"> | bigint | number;
+    userId?: Prisma.BigIntFilter<"Reply"> | bigint | number;
+    parentReplyId?: Prisma.BigIntNullableFilter<"Reply"> | bigint | number | null;
+    content?: Prisma.StringFilter<"Reply"> | string;
+    isDeleted?: Prisma.BoolFilter<"Reply"> | boolean;
+    likeCount?: Prisma.BigIntFilter<"Reply"> | bigint | number;
+    createdAt?: Prisma.DateTimeFilter<"Reply"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"Reply"> | Date | string;
+    comment?: Prisma.XOR<Prisma.CommentScalarRelationFilter, Prisma.CommentWhereInput>;
+    user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
+    parentReply?: Prisma.XOR<Prisma.ReplyNullableScalarRelationFilter, Prisma.ReplyWhereInput> | null;
+    childReplies?: Prisma.ReplyListRelationFilter;
+};
+export type ReplyOrderByWithRelationInput = {
+    id?: Prisma.SortOrder;
+    uuid?: Prisma.SortOrder;
+    commentId?: Prisma.SortOrder;
+    userId?: Prisma.SortOrder;
+    parentReplyId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    content?: Prisma.SortOrder;
+    isDeleted?: Prisma.SortOrder;
+    likeCount?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    comment?: Prisma.CommentOrderByWithRelationInput;
+    user?: Prisma.UserOrderByWithRelationInput;
+    parentReply?: Prisma.ReplyOrderByWithRelationInput;
+    childReplies?: Prisma.ReplyOrderByRelationAggregateInput;
+};
+export type ReplyWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number;
+    uuid?: string;
+    AND?: Prisma.ReplyWhereInput | Prisma.ReplyWhereInput[];
+    OR?: Prisma.ReplyWhereInput[];
+    NOT?: Prisma.ReplyWhereInput | Prisma.ReplyWhereInput[];
+    commentId?: Prisma.BigIntFilter<"Reply"> | bigint | number;
+    userId?: Prisma.BigIntFilter<"Reply"> | bigint | number;
+    parentReplyId?: Prisma.BigIntNullableFilter<"Reply"> | bigint | number | null;
+    content?: Prisma.StringFilter<"Reply"> | string;
+    isDeleted?: Prisma.BoolFilter<"Reply"> | boolean;
+    likeCount?: Prisma.BigIntFilter<"Reply"> | bigint | number;
+    createdAt?: Prisma.DateTimeFilter<"Reply"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"Reply"> | Date | string;
+    comment?: Prisma.XOR<Prisma.CommentScalarRelationFilter, Prisma.CommentWhereInput>;
+    user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
+    parentReply?: Prisma.XOR<Prisma.ReplyNullableScalarRelationFilter, Prisma.ReplyWhereInput> | null;
+    childReplies?: Prisma.ReplyListRelationFilter;
+}, "id" | "uuid">;
+export type ReplyOrderByWithAggregationInput = {
+    id?: Prisma.SortOrder;
+    uuid?: Prisma.SortOrder;
+    commentId?: Prisma.SortOrder;
+    userId?: Prisma.SortOrder;
+    parentReplyId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    content?: Prisma.SortOrder;
+    isDeleted?: Prisma.SortOrder;
+    likeCount?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.ReplyCountOrderByAggregateInput;
+    _avg?: Prisma.ReplyAvgOrderByAggregateInput;
+    _max?: Prisma.ReplyMaxOrderByAggregateInput;
+    _min?: Prisma.ReplyMinOrderByAggregateInput;
+    _sum?: Prisma.ReplySumOrderByAggregateInput;
+};
+export type ReplyScalarWhereWithAggregatesInput = {
+    AND?: Prisma.ReplyScalarWhereWithAggregatesInput | Prisma.ReplyScalarWhereWithAggregatesInput[];
+    OR?: Prisma.ReplyScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.ReplyScalarWhereWithAggregatesInput | Prisma.ReplyScalarWhereWithAggregatesInput[];
+    id?: Prisma.BigIntWithAggregatesFilter<"Reply"> | bigint | number;
+    uuid?: Prisma.StringWithAggregatesFilter<"Reply"> | string;
+    commentId?: Prisma.BigIntWithAggregatesFilter<"Reply"> | bigint | number;
+    userId?: Prisma.BigIntWithAggregatesFilter<"Reply"> | bigint | number;
+    parentReplyId?: Prisma.BigIntNullableWithAggregatesFilter<"Reply"> | bigint | number | null;
+    content?: Prisma.StringWithAggregatesFilter<"Reply"> | string;
+    isDeleted?: Prisma.BoolWithAggregatesFilter<"Reply"> | boolean;
+    likeCount?: Prisma.BigIntWithAggregatesFilter<"Reply"> | bigint | number;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"Reply"> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Reply"> | Date | string;
+};
+export type ReplyCreateInput = {
+    id?: bigint | number;
+    uuid?: string;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    comment: Prisma.CommentCreateNestedOneWithoutRepliesInput;
+    user: Prisma.UserCreateNestedOneWithoutRepliesInput;
+    parentReply?: Prisma.ReplyCreateNestedOneWithoutChildRepliesInput;
+    childReplies?: Prisma.ReplyCreateNestedManyWithoutParentReplyInput;
+};
+export type ReplyUncheckedCreateInput = {
+    id?: bigint | number;
+    uuid?: string;
+    commentId: bigint | number;
+    userId: bigint | number;
+    parentReplyId?: bigint | number | null;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    childReplies?: Prisma.ReplyUncheckedCreateNestedManyWithoutParentReplyInput;
+};
+export type ReplyUpdateInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    comment?: Prisma.CommentUpdateOneRequiredWithoutRepliesNestedInput;
+    user?: Prisma.UserUpdateOneRequiredWithoutRepliesNestedInput;
+    parentReply?: Prisma.ReplyUpdateOneWithoutChildRepliesNestedInput;
+    childReplies?: Prisma.ReplyUpdateManyWithoutParentReplyNestedInput;
+};
+export type ReplyUncheckedUpdateInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    commentId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    userId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    parentReplyId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    childReplies?: Prisma.ReplyUncheckedUpdateManyWithoutParentReplyNestedInput;
+};
+export type ReplyCreateManyInput = {
+    id?: bigint | number;
+    uuid?: string;
+    commentId: bigint | number;
+    userId: bigint | number;
+    parentReplyId?: bigint | number | null;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type ReplyUpdateManyMutationInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ReplyUncheckedUpdateManyInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    commentId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    userId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    parentReplyId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ReplyListRelationFilter = {
+    every?: Prisma.ReplyWhereInput;
+    some?: Prisma.ReplyWhereInput;
+    none?: Prisma.ReplyWhereInput;
+};
+export type ReplyOrderByRelationAggregateInput = {
+    _count?: Prisma.SortOrder;
+};
+export type ReplyNullableScalarRelationFilter = {
+    is?: Prisma.ReplyWhereInput | null;
+    isNot?: Prisma.ReplyWhereInput | null;
+};
+export type ReplyCountOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    uuid?: Prisma.SortOrder;
+    commentId?: Prisma.SortOrder;
+    userId?: Prisma.SortOrder;
+    parentReplyId?: Prisma.SortOrder;
+    content?: Prisma.SortOrder;
+    isDeleted?: Prisma.SortOrder;
+    likeCount?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type ReplyAvgOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    commentId?: Prisma.SortOrder;
+    userId?: Prisma.SortOrder;
+    parentReplyId?: Prisma.SortOrder;
+    likeCount?: Prisma.SortOrder;
+};
+export type ReplyMaxOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    uuid?: Prisma.SortOrder;
+    commentId?: Prisma.SortOrder;
+    userId?: Prisma.SortOrder;
+    parentReplyId?: Prisma.SortOrder;
+    content?: Prisma.SortOrder;
+    isDeleted?: Prisma.SortOrder;
+    likeCount?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type ReplyMinOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    uuid?: Prisma.SortOrder;
+    commentId?: Prisma.SortOrder;
+    userId?: Prisma.SortOrder;
+    parentReplyId?: Prisma.SortOrder;
+    content?: Prisma.SortOrder;
+    isDeleted?: Prisma.SortOrder;
+    likeCount?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type ReplySumOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    commentId?: Prisma.SortOrder;
+    userId?: Prisma.SortOrder;
+    parentReplyId?: Prisma.SortOrder;
+    likeCount?: Prisma.SortOrder;
+};
+export type ReplyCreateNestedManyWithoutUserInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutUserInput, Prisma.ReplyUncheckedCreateWithoutUserInput> | Prisma.ReplyCreateWithoutUserInput[] | Prisma.ReplyUncheckedCreateWithoutUserInput[];
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutUserInput | Prisma.ReplyCreateOrConnectWithoutUserInput[];
+    createMany?: Prisma.ReplyCreateManyUserInputEnvelope;
+    connect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+};
+export type ReplyUncheckedCreateNestedManyWithoutUserInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutUserInput, Prisma.ReplyUncheckedCreateWithoutUserInput> | Prisma.ReplyCreateWithoutUserInput[] | Prisma.ReplyUncheckedCreateWithoutUserInput[];
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutUserInput | Prisma.ReplyCreateOrConnectWithoutUserInput[];
+    createMany?: Prisma.ReplyCreateManyUserInputEnvelope;
+    connect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+};
+export type ReplyUpdateManyWithoutUserNestedInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutUserInput, Prisma.ReplyUncheckedCreateWithoutUserInput> | Prisma.ReplyCreateWithoutUserInput[] | Prisma.ReplyUncheckedCreateWithoutUserInput[];
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutUserInput | Prisma.ReplyCreateOrConnectWithoutUserInput[];
+    upsert?: Prisma.ReplyUpsertWithWhereUniqueWithoutUserInput | Prisma.ReplyUpsertWithWhereUniqueWithoutUserInput[];
+    createMany?: Prisma.ReplyCreateManyUserInputEnvelope;
+    set?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    disconnect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    delete?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    connect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    update?: Prisma.ReplyUpdateWithWhereUniqueWithoutUserInput | Prisma.ReplyUpdateWithWhereUniqueWithoutUserInput[];
+    updateMany?: Prisma.ReplyUpdateManyWithWhereWithoutUserInput | Prisma.ReplyUpdateManyWithWhereWithoutUserInput[];
+    deleteMany?: Prisma.ReplyScalarWhereInput | Prisma.ReplyScalarWhereInput[];
+};
+export type ReplyUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutUserInput, Prisma.ReplyUncheckedCreateWithoutUserInput> | Prisma.ReplyCreateWithoutUserInput[] | Prisma.ReplyUncheckedCreateWithoutUserInput[];
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutUserInput | Prisma.ReplyCreateOrConnectWithoutUserInput[];
+    upsert?: Prisma.ReplyUpsertWithWhereUniqueWithoutUserInput | Prisma.ReplyUpsertWithWhereUniqueWithoutUserInput[];
+    createMany?: Prisma.ReplyCreateManyUserInputEnvelope;
+    set?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    disconnect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    delete?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    connect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    update?: Prisma.ReplyUpdateWithWhereUniqueWithoutUserInput | Prisma.ReplyUpdateWithWhereUniqueWithoutUserInput[];
+    updateMany?: Prisma.ReplyUpdateManyWithWhereWithoutUserInput | Prisma.ReplyUpdateManyWithWhereWithoutUserInput[];
+    deleteMany?: Prisma.ReplyScalarWhereInput | Prisma.ReplyScalarWhereInput[];
+};
+export type ReplyCreateNestedManyWithoutCommentInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutCommentInput, Prisma.ReplyUncheckedCreateWithoutCommentInput> | Prisma.ReplyCreateWithoutCommentInput[] | Prisma.ReplyUncheckedCreateWithoutCommentInput[];
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutCommentInput | Prisma.ReplyCreateOrConnectWithoutCommentInput[];
+    createMany?: Prisma.ReplyCreateManyCommentInputEnvelope;
+    connect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+};
+export type ReplyUncheckedCreateNestedManyWithoutCommentInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutCommentInput, Prisma.ReplyUncheckedCreateWithoutCommentInput> | Prisma.ReplyCreateWithoutCommentInput[] | Prisma.ReplyUncheckedCreateWithoutCommentInput[];
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutCommentInput | Prisma.ReplyCreateOrConnectWithoutCommentInput[];
+    createMany?: Prisma.ReplyCreateManyCommentInputEnvelope;
+    connect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+};
+export type ReplyUpdateManyWithoutCommentNestedInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutCommentInput, Prisma.ReplyUncheckedCreateWithoutCommentInput> | Prisma.ReplyCreateWithoutCommentInput[] | Prisma.ReplyUncheckedCreateWithoutCommentInput[];
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutCommentInput | Prisma.ReplyCreateOrConnectWithoutCommentInput[];
+    upsert?: Prisma.ReplyUpsertWithWhereUniqueWithoutCommentInput | Prisma.ReplyUpsertWithWhereUniqueWithoutCommentInput[];
+    createMany?: Prisma.ReplyCreateManyCommentInputEnvelope;
+    set?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    disconnect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    delete?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    connect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    update?: Prisma.ReplyUpdateWithWhereUniqueWithoutCommentInput | Prisma.ReplyUpdateWithWhereUniqueWithoutCommentInput[];
+    updateMany?: Prisma.ReplyUpdateManyWithWhereWithoutCommentInput | Prisma.ReplyUpdateManyWithWhereWithoutCommentInput[];
+    deleteMany?: Prisma.ReplyScalarWhereInput | Prisma.ReplyScalarWhereInput[];
+};
+export type ReplyUncheckedUpdateManyWithoutCommentNestedInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutCommentInput, Prisma.ReplyUncheckedCreateWithoutCommentInput> | Prisma.ReplyCreateWithoutCommentInput[] | Prisma.ReplyUncheckedCreateWithoutCommentInput[];
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutCommentInput | Prisma.ReplyCreateOrConnectWithoutCommentInput[];
+    upsert?: Prisma.ReplyUpsertWithWhereUniqueWithoutCommentInput | Prisma.ReplyUpsertWithWhereUniqueWithoutCommentInput[];
+    createMany?: Prisma.ReplyCreateManyCommentInputEnvelope;
+    set?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    disconnect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    delete?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    connect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    update?: Prisma.ReplyUpdateWithWhereUniqueWithoutCommentInput | Prisma.ReplyUpdateWithWhereUniqueWithoutCommentInput[];
+    updateMany?: Prisma.ReplyUpdateManyWithWhereWithoutCommentInput | Prisma.ReplyUpdateManyWithWhereWithoutCommentInput[];
+    deleteMany?: Prisma.ReplyScalarWhereInput | Prisma.ReplyScalarWhereInput[];
+};
+export type ReplyCreateNestedOneWithoutChildRepliesInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutChildRepliesInput, Prisma.ReplyUncheckedCreateWithoutChildRepliesInput>;
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutChildRepliesInput;
+    connect?: Prisma.ReplyWhereUniqueInput;
+};
+export type ReplyCreateNestedManyWithoutParentReplyInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutParentReplyInput, Prisma.ReplyUncheckedCreateWithoutParentReplyInput> | Prisma.ReplyCreateWithoutParentReplyInput[] | Prisma.ReplyUncheckedCreateWithoutParentReplyInput[];
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutParentReplyInput | Prisma.ReplyCreateOrConnectWithoutParentReplyInput[];
+    createMany?: Prisma.ReplyCreateManyParentReplyInputEnvelope;
+    connect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+};
+export type ReplyUncheckedCreateNestedManyWithoutParentReplyInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutParentReplyInput, Prisma.ReplyUncheckedCreateWithoutParentReplyInput> | Prisma.ReplyCreateWithoutParentReplyInput[] | Prisma.ReplyUncheckedCreateWithoutParentReplyInput[];
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutParentReplyInput | Prisma.ReplyCreateOrConnectWithoutParentReplyInput[];
+    createMany?: Prisma.ReplyCreateManyParentReplyInputEnvelope;
+    connect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+};
+export type ReplyUpdateOneWithoutChildRepliesNestedInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutChildRepliesInput, Prisma.ReplyUncheckedCreateWithoutChildRepliesInput>;
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutChildRepliesInput;
+    upsert?: Prisma.ReplyUpsertWithoutChildRepliesInput;
+    disconnect?: Prisma.ReplyWhereInput | boolean;
+    delete?: Prisma.ReplyWhereInput | boolean;
+    connect?: Prisma.ReplyWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.ReplyUpdateToOneWithWhereWithoutChildRepliesInput, Prisma.ReplyUpdateWithoutChildRepliesInput>, Prisma.ReplyUncheckedUpdateWithoutChildRepliesInput>;
+};
+export type ReplyUpdateManyWithoutParentReplyNestedInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutParentReplyInput, Prisma.ReplyUncheckedCreateWithoutParentReplyInput> | Prisma.ReplyCreateWithoutParentReplyInput[] | Prisma.ReplyUncheckedCreateWithoutParentReplyInput[];
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutParentReplyInput | Prisma.ReplyCreateOrConnectWithoutParentReplyInput[];
+    upsert?: Prisma.ReplyUpsertWithWhereUniqueWithoutParentReplyInput | Prisma.ReplyUpsertWithWhereUniqueWithoutParentReplyInput[];
+    createMany?: Prisma.ReplyCreateManyParentReplyInputEnvelope;
+    set?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    disconnect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    delete?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    connect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    update?: Prisma.ReplyUpdateWithWhereUniqueWithoutParentReplyInput | Prisma.ReplyUpdateWithWhereUniqueWithoutParentReplyInput[];
+    updateMany?: Prisma.ReplyUpdateManyWithWhereWithoutParentReplyInput | Prisma.ReplyUpdateManyWithWhereWithoutParentReplyInput[];
+    deleteMany?: Prisma.ReplyScalarWhereInput | Prisma.ReplyScalarWhereInput[];
+};
+export type NullableBigIntFieldUpdateOperationsInput = {
+    set?: bigint | number | null;
+    increment?: bigint | number;
+    decrement?: bigint | number;
+    multiply?: bigint | number;
+    divide?: bigint | number;
+};
+export type ReplyUncheckedUpdateManyWithoutParentReplyNestedInput = {
+    create?: Prisma.XOR<Prisma.ReplyCreateWithoutParentReplyInput, Prisma.ReplyUncheckedCreateWithoutParentReplyInput> | Prisma.ReplyCreateWithoutParentReplyInput[] | Prisma.ReplyUncheckedCreateWithoutParentReplyInput[];
+    connectOrCreate?: Prisma.ReplyCreateOrConnectWithoutParentReplyInput | Prisma.ReplyCreateOrConnectWithoutParentReplyInput[];
+    upsert?: Prisma.ReplyUpsertWithWhereUniqueWithoutParentReplyInput | Prisma.ReplyUpsertWithWhereUniqueWithoutParentReplyInput[];
+    createMany?: Prisma.ReplyCreateManyParentReplyInputEnvelope;
+    set?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    disconnect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    delete?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    connect?: Prisma.ReplyWhereUniqueInput | Prisma.ReplyWhereUniqueInput[];
+    update?: Prisma.ReplyUpdateWithWhereUniqueWithoutParentReplyInput | Prisma.ReplyUpdateWithWhereUniqueWithoutParentReplyInput[];
+    updateMany?: Prisma.ReplyUpdateManyWithWhereWithoutParentReplyInput | Prisma.ReplyUpdateManyWithWhereWithoutParentReplyInput[];
+    deleteMany?: Prisma.ReplyScalarWhereInput | Prisma.ReplyScalarWhereInput[];
+};
+export type ReplyCreateWithoutUserInput = {
+    id?: bigint | number;
+    uuid?: string;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    comment: Prisma.CommentCreateNestedOneWithoutRepliesInput;
+    parentReply?: Prisma.ReplyCreateNestedOneWithoutChildRepliesInput;
+    childReplies?: Prisma.ReplyCreateNestedManyWithoutParentReplyInput;
+};
+export type ReplyUncheckedCreateWithoutUserInput = {
+    id?: bigint | number;
+    uuid?: string;
+    commentId: bigint | number;
+    parentReplyId?: bigint | number | null;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    childReplies?: Prisma.ReplyUncheckedCreateNestedManyWithoutParentReplyInput;
+};
+export type ReplyCreateOrConnectWithoutUserInput = {
+    where: Prisma.ReplyWhereUniqueInput;
+    create: Prisma.XOR<Prisma.ReplyCreateWithoutUserInput, Prisma.ReplyUncheckedCreateWithoutUserInput>;
+};
+export type ReplyCreateManyUserInputEnvelope = {
+    data: Prisma.ReplyCreateManyUserInput | Prisma.ReplyCreateManyUserInput[];
+    skipDuplicates?: boolean;
+};
+export type ReplyUpsertWithWhereUniqueWithoutUserInput = {
+    where: Prisma.ReplyWhereUniqueInput;
+    update: Prisma.XOR<Prisma.ReplyUpdateWithoutUserInput, Prisma.ReplyUncheckedUpdateWithoutUserInput>;
+    create: Prisma.XOR<Prisma.ReplyCreateWithoutUserInput, Prisma.ReplyUncheckedCreateWithoutUserInput>;
+};
+export type ReplyUpdateWithWhereUniqueWithoutUserInput = {
+    where: Prisma.ReplyWhereUniqueInput;
+    data: Prisma.XOR<Prisma.ReplyUpdateWithoutUserInput, Prisma.ReplyUncheckedUpdateWithoutUserInput>;
+};
+export type ReplyUpdateManyWithWhereWithoutUserInput = {
+    where: Prisma.ReplyScalarWhereInput;
+    data: Prisma.XOR<Prisma.ReplyUpdateManyMutationInput, Prisma.ReplyUncheckedUpdateManyWithoutUserInput>;
+};
+export type ReplyScalarWhereInput = {
+    AND?: Prisma.ReplyScalarWhereInput | Prisma.ReplyScalarWhereInput[];
+    OR?: Prisma.ReplyScalarWhereInput[];
+    NOT?: Prisma.ReplyScalarWhereInput | Prisma.ReplyScalarWhereInput[];
+    id?: Prisma.BigIntFilter<"Reply"> | bigint | number;
+    uuid?: Prisma.StringFilter<"Reply"> | string;
+    commentId?: Prisma.BigIntFilter<"Reply"> | bigint | number;
+    userId?: Prisma.BigIntFilter<"Reply"> | bigint | number;
+    parentReplyId?: Prisma.BigIntNullableFilter<"Reply"> | bigint | number | null;
+    content?: Prisma.StringFilter<"Reply"> | string;
+    isDeleted?: Prisma.BoolFilter<"Reply"> | boolean;
+    likeCount?: Prisma.BigIntFilter<"Reply"> | bigint | number;
+    createdAt?: Prisma.DateTimeFilter<"Reply"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"Reply"> | Date | string;
+};
+export type ReplyCreateWithoutCommentInput = {
+    id?: bigint | number;
+    uuid?: string;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    user: Prisma.UserCreateNestedOneWithoutRepliesInput;
+    parentReply?: Prisma.ReplyCreateNestedOneWithoutChildRepliesInput;
+    childReplies?: Prisma.ReplyCreateNestedManyWithoutParentReplyInput;
+};
+export type ReplyUncheckedCreateWithoutCommentInput = {
+    id?: bigint | number;
+    uuid?: string;
+    userId: bigint | number;
+    parentReplyId?: bigint | number | null;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    childReplies?: Prisma.ReplyUncheckedCreateNestedManyWithoutParentReplyInput;
+};
+export type ReplyCreateOrConnectWithoutCommentInput = {
+    where: Prisma.ReplyWhereUniqueInput;
+    create: Prisma.XOR<Prisma.ReplyCreateWithoutCommentInput, Prisma.ReplyUncheckedCreateWithoutCommentInput>;
+};
+export type ReplyCreateManyCommentInputEnvelope = {
+    data: Prisma.ReplyCreateManyCommentInput | Prisma.ReplyCreateManyCommentInput[];
+    skipDuplicates?: boolean;
+};
+export type ReplyUpsertWithWhereUniqueWithoutCommentInput = {
+    where: Prisma.ReplyWhereUniqueInput;
+    update: Prisma.XOR<Prisma.ReplyUpdateWithoutCommentInput, Prisma.ReplyUncheckedUpdateWithoutCommentInput>;
+    create: Prisma.XOR<Prisma.ReplyCreateWithoutCommentInput, Prisma.ReplyUncheckedCreateWithoutCommentInput>;
+};
+export type ReplyUpdateWithWhereUniqueWithoutCommentInput = {
+    where: Prisma.ReplyWhereUniqueInput;
+    data: Prisma.XOR<Prisma.ReplyUpdateWithoutCommentInput, Prisma.ReplyUncheckedUpdateWithoutCommentInput>;
+};
+export type ReplyUpdateManyWithWhereWithoutCommentInput = {
+    where: Prisma.ReplyScalarWhereInput;
+    data: Prisma.XOR<Prisma.ReplyUpdateManyMutationInput, Prisma.ReplyUncheckedUpdateManyWithoutCommentInput>;
+};
+export type ReplyCreateWithoutChildRepliesInput = {
+    id?: bigint | number;
+    uuid?: string;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    comment: Prisma.CommentCreateNestedOneWithoutRepliesInput;
+    user: Prisma.UserCreateNestedOneWithoutRepliesInput;
+    parentReply?: Prisma.ReplyCreateNestedOneWithoutChildRepliesInput;
+};
+export type ReplyUncheckedCreateWithoutChildRepliesInput = {
+    id?: bigint | number;
+    uuid?: string;
+    commentId: bigint | number;
+    userId: bigint | number;
+    parentReplyId?: bigint | number | null;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type ReplyCreateOrConnectWithoutChildRepliesInput = {
+    where: Prisma.ReplyWhereUniqueInput;
+    create: Prisma.XOR<Prisma.ReplyCreateWithoutChildRepliesInput, Prisma.ReplyUncheckedCreateWithoutChildRepliesInput>;
+};
+export type ReplyCreateWithoutParentReplyInput = {
+    id?: bigint | number;
+    uuid?: string;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    comment: Prisma.CommentCreateNestedOneWithoutRepliesInput;
+    user: Prisma.UserCreateNestedOneWithoutRepliesInput;
+    childReplies?: Prisma.ReplyCreateNestedManyWithoutParentReplyInput;
+};
+export type ReplyUncheckedCreateWithoutParentReplyInput = {
+    id?: bigint | number;
+    uuid?: string;
+    commentId: bigint | number;
+    userId: bigint | number;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    childReplies?: Prisma.ReplyUncheckedCreateNestedManyWithoutParentReplyInput;
+};
+export type ReplyCreateOrConnectWithoutParentReplyInput = {
+    where: Prisma.ReplyWhereUniqueInput;
+    create: Prisma.XOR<Prisma.ReplyCreateWithoutParentReplyInput, Prisma.ReplyUncheckedCreateWithoutParentReplyInput>;
+};
+export type ReplyCreateManyParentReplyInputEnvelope = {
+    data: Prisma.ReplyCreateManyParentReplyInput | Prisma.ReplyCreateManyParentReplyInput[];
+    skipDuplicates?: boolean;
+};
+export type ReplyUpsertWithoutChildRepliesInput = {
+    update: Prisma.XOR<Prisma.ReplyUpdateWithoutChildRepliesInput, Prisma.ReplyUncheckedUpdateWithoutChildRepliesInput>;
+    create: Prisma.XOR<Prisma.ReplyCreateWithoutChildRepliesInput, Prisma.ReplyUncheckedCreateWithoutChildRepliesInput>;
+    where?: Prisma.ReplyWhereInput;
+};
+export type ReplyUpdateToOneWithWhereWithoutChildRepliesInput = {
+    where?: Prisma.ReplyWhereInput;
+    data: Prisma.XOR<Prisma.ReplyUpdateWithoutChildRepliesInput, Prisma.ReplyUncheckedUpdateWithoutChildRepliesInput>;
+};
+export type ReplyUpdateWithoutChildRepliesInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    comment?: Prisma.CommentUpdateOneRequiredWithoutRepliesNestedInput;
+    user?: Prisma.UserUpdateOneRequiredWithoutRepliesNestedInput;
+    parentReply?: Prisma.ReplyUpdateOneWithoutChildRepliesNestedInput;
+};
+export type ReplyUncheckedUpdateWithoutChildRepliesInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    commentId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    userId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    parentReplyId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ReplyUpsertWithWhereUniqueWithoutParentReplyInput = {
+    where: Prisma.ReplyWhereUniqueInput;
+    update: Prisma.XOR<Prisma.ReplyUpdateWithoutParentReplyInput, Prisma.ReplyUncheckedUpdateWithoutParentReplyInput>;
+    create: Prisma.XOR<Prisma.ReplyCreateWithoutParentReplyInput, Prisma.ReplyUncheckedCreateWithoutParentReplyInput>;
+};
+export type ReplyUpdateWithWhereUniqueWithoutParentReplyInput = {
+    where: Prisma.ReplyWhereUniqueInput;
+    data: Prisma.XOR<Prisma.ReplyUpdateWithoutParentReplyInput, Prisma.ReplyUncheckedUpdateWithoutParentReplyInput>;
+};
+export type ReplyUpdateManyWithWhereWithoutParentReplyInput = {
+    where: Prisma.ReplyScalarWhereInput;
+    data: Prisma.XOR<Prisma.ReplyUpdateManyMutationInput, Prisma.ReplyUncheckedUpdateManyWithoutParentReplyInput>;
+};
+export type ReplyCreateManyUserInput = {
+    id?: bigint | number;
+    uuid?: string;
+    commentId: bigint | number;
+    parentReplyId?: bigint | number | null;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type ReplyUpdateWithoutUserInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    comment?: Prisma.CommentUpdateOneRequiredWithoutRepliesNestedInput;
+    parentReply?: Prisma.ReplyUpdateOneWithoutChildRepliesNestedInput;
+    childReplies?: Prisma.ReplyUpdateManyWithoutParentReplyNestedInput;
+};
+export type ReplyUncheckedUpdateWithoutUserInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    commentId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    parentReplyId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    childReplies?: Prisma.ReplyUncheckedUpdateManyWithoutParentReplyNestedInput;
+};
+export type ReplyUncheckedUpdateManyWithoutUserInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    commentId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    parentReplyId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ReplyCreateManyCommentInput = {
+    id?: bigint | number;
+    uuid?: string;
+    userId: bigint | number;
+    parentReplyId?: bigint | number | null;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type ReplyUpdateWithoutCommentInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    user?: Prisma.UserUpdateOneRequiredWithoutRepliesNestedInput;
+    parentReply?: Prisma.ReplyUpdateOneWithoutChildRepliesNestedInput;
+    childReplies?: Prisma.ReplyUpdateManyWithoutParentReplyNestedInput;
+};
+export type ReplyUncheckedUpdateWithoutCommentInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    userId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    parentReplyId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    childReplies?: Prisma.ReplyUncheckedUpdateManyWithoutParentReplyNestedInput;
+};
+export type ReplyUncheckedUpdateManyWithoutCommentInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    userId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    parentReplyId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ReplyCreateManyParentReplyInput = {
+    id?: bigint | number;
+    uuid?: string;
+    commentId: bigint | number;
+    userId: bigint | number;
+    content: string;
+    isDeleted?: boolean;
+    likeCount?: bigint | number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type ReplyUpdateWithoutParentReplyInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    comment?: Prisma.CommentUpdateOneRequiredWithoutRepliesNestedInput;
+    user?: Prisma.UserUpdateOneRequiredWithoutRepliesNestedInput;
+    childReplies?: Prisma.ReplyUpdateManyWithoutParentReplyNestedInput;
+};
+export type ReplyUncheckedUpdateWithoutParentReplyInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    commentId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    userId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    childReplies?: Prisma.ReplyUncheckedUpdateManyWithoutParentReplyNestedInput;
+};
+export type ReplyUncheckedUpdateManyWithoutParentReplyInput = {
+    id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    uuid?: Prisma.StringFieldUpdateOperationsInput | string;
+    commentId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    userId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    content?: Prisma.StringFieldUpdateOperationsInput | string;
+    isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    likeCount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+/**
+ * Count Type ReplyCountOutputType
+ */
+export type ReplyCountOutputType = {
+    childReplies: number;
+};
+export type ReplyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    childReplies?: boolean | ReplyCountOutputTypeCountChildRepliesArgs;
+};
+/**
+ * ReplyCountOutputType without action
+ */
+export type ReplyCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReplyCountOutputType
+     */
+    select?: Prisma.ReplyCountOutputTypeSelect<ExtArgs> | null;
+};
+/**
+ * ReplyCountOutputType without action
+ */
+export type ReplyCountOutputTypeCountChildRepliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.ReplyWhereInput;
+};
+export type ReplySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    uuid?: boolean;
+    commentId?: boolean;
+    userId?: boolean;
+    parentReplyId?: boolean;
+    content?: boolean;
+    isDeleted?: boolean;
+    likeCount?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>;
+    user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+    parentReply?: boolean | Prisma.Reply$parentReplyArgs<ExtArgs>;
+    childReplies?: boolean | Prisma.Reply$childRepliesArgs<ExtArgs>;
+    _count?: boolean | Prisma.ReplyCountOutputTypeDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["reply"]>;
+export type ReplySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    uuid?: boolean;
+    commentId?: boolean;
+    userId?: boolean;
+    parentReplyId?: boolean;
+    content?: boolean;
+    isDeleted?: boolean;
+    likeCount?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>;
+    user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+    parentReply?: boolean | Prisma.Reply$parentReplyArgs<ExtArgs>;
+}, ExtArgs["result"]["reply"]>;
+export type ReplySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    uuid?: boolean;
+    commentId?: boolean;
+    userId?: boolean;
+    parentReplyId?: boolean;
+    content?: boolean;
+    isDeleted?: boolean;
+    likeCount?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>;
+    user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+    parentReply?: boolean | Prisma.Reply$parentReplyArgs<ExtArgs>;
+}, ExtArgs["result"]["reply"]>;
+export type ReplySelectScalar = {
+    id?: boolean;
+    uuid?: boolean;
+    commentId?: boolean;
+    userId?: boolean;
+    parentReplyId?: boolean;
+    content?: boolean;
+    isDeleted?: boolean;
+    likeCount?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+};
+export type ReplyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "uuid" | "commentId" | "userId" | "parentReplyId" | "content" | "isDeleted" | "likeCount" | "createdAt" | "updatedAt", ExtArgs["result"]["reply"]>;
+export type ReplyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>;
+    user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+    parentReply?: boolean | Prisma.Reply$parentReplyArgs<ExtArgs>;
+    childReplies?: boolean | Prisma.Reply$childRepliesArgs<ExtArgs>;
+    _count?: boolean | Prisma.ReplyCountOutputTypeDefaultArgs<ExtArgs>;
+};
+export type ReplyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>;
+    user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+    parentReply?: boolean | Prisma.Reply$parentReplyArgs<ExtArgs>;
+};
+export type ReplyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    comment?: boolean | Prisma.CommentDefaultArgs<ExtArgs>;
+    user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
+    parentReply?: boolean | Prisma.Reply$parentReplyArgs<ExtArgs>;
+};
+export type $ReplyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "Reply";
+    objects: {
+        comment: Prisma.$CommentPayload<ExtArgs>;
+        user: Prisma.$UserPayload<ExtArgs>;
+        parentReply: Prisma.$ReplyPayload<ExtArgs> | null;
+        childReplies: Prisma.$ReplyPayload<ExtArgs>[];
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        id: bigint;
+        uuid: string;
+        commentId: bigint;
+        userId: bigint;
+        parentReplyId: bigint | null;
+        content: string;
+        isDeleted: boolean;
+        likeCount: bigint;
+        createdAt: Date;
+        updatedAt: Date;
+    }, ExtArgs["result"]["reply"]>;
+    composites: {};
+};
+export type ReplyGetPayload<S extends boolean | null | undefined | ReplyDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ReplyPayload, S>;
+export type ReplyCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<ReplyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: ReplyCountAggregateInputType | true;
+};
+export interface ReplyDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['Reply'];
+        meta: {
+            name: 'Reply';
+        };
+    };
+    /**
+     * Find zero or one Reply that matches the filter.
+     * @param {ReplyFindUniqueArgs} args - Arguments to find a Reply
+     * @example
+     * // Get one Reply
+     * const reply = await prisma.reply.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReplyFindUniqueArgs>(args: Prisma.SelectSubset<T, ReplyFindUniqueArgs<ExtArgs>>): Prisma.Prisma__ReplyClient<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one Reply that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReplyFindUniqueOrThrowArgs} args - Arguments to find a Reply
+     * @example
+     * // Get one Reply
+     * const reply = await prisma.reply.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReplyFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, ReplyFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__ReplyClient<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first Reply that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReplyFindFirstArgs} args - Arguments to find a Reply
+     * @example
+     * // Get one Reply
+     * const reply = await prisma.reply.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReplyFindFirstArgs>(args?: Prisma.SelectSubset<T, ReplyFindFirstArgs<ExtArgs>>): Prisma.Prisma__ReplyClient<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first Reply that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReplyFindFirstOrThrowArgs} args - Arguments to find a Reply
+     * @example
+     * // Get one Reply
+     * const reply = await prisma.reply.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReplyFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, ReplyFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__ReplyClient<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more Replies that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReplyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Replies
+     * const replies = await prisma.reply.findMany()
+     *
+     * // Get first 10 Replies
+     * const replies = await prisma.reply.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const replyWithIdOnly = await prisma.reply.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends ReplyFindManyArgs>(args?: Prisma.SelectSubset<T, ReplyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a Reply.
+     * @param {ReplyCreateArgs} args - Arguments to create a Reply.
+     * @example
+     * // Create one Reply
+     * const Reply = await prisma.reply.create({
+     *   data: {
+     *     // ... data to create a Reply
+     *   }
+     * })
+     *
+     */
+    create<T extends ReplyCreateArgs>(args: Prisma.SelectSubset<T, ReplyCreateArgs<ExtArgs>>): Prisma.Prisma__ReplyClient<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many Replies.
+     * @param {ReplyCreateManyArgs} args - Arguments to create many Replies.
+     * @example
+     * // Create many Replies
+     * const reply = await prisma.reply.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ReplyCreateManyArgs>(args?: Prisma.SelectSubset<T, ReplyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many Replies and returns the data saved in the database.
+     * @param {ReplyCreateManyAndReturnArgs} args - Arguments to create many Replies.
+     * @example
+     * // Create many Replies
+     * const reply = await prisma.reply.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many Replies and only return the `id`
+     * const replyWithIdOnly = await prisma.reply.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ReplyCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, ReplyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a Reply.
+     * @param {ReplyDeleteArgs} args - Arguments to delete one Reply.
+     * @example
+     * // Delete one Reply
+     * const Reply = await prisma.reply.delete({
+     *   where: {
+     *     // ... filter to delete one Reply
+     *   }
+     * })
+     *
+     */
+    delete<T extends ReplyDeleteArgs>(args: Prisma.SelectSubset<T, ReplyDeleteArgs<ExtArgs>>): Prisma.Prisma__ReplyClient<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one Reply.
+     * @param {ReplyUpdateArgs} args - Arguments to update one Reply.
+     * @example
+     * // Update one Reply
+     * const reply = await prisma.reply.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ReplyUpdateArgs>(args: Prisma.SelectSubset<T, ReplyUpdateArgs<ExtArgs>>): Prisma.Prisma__ReplyClient<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more Replies.
+     * @param {ReplyDeleteManyArgs} args - Arguments to filter Replies to delete.
+     * @example
+     * // Delete a few Replies
+     * const { count } = await prisma.reply.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ReplyDeleteManyArgs>(args?: Prisma.SelectSubset<T, ReplyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more Replies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReplyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Replies
+     * const reply = await prisma.reply.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ReplyUpdateManyArgs>(args: Prisma.SelectSubset<T, ReplyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more Replies and returns the data updated in the database.
+     * @param {ReplyUpdateManyAndReturnArgs} args - Arguments to update many Replies.
+     * @example
+     * // Update many Replies
+     * const reply = await prisma.reply.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more Replies and only return the `id`
+     * const replyWithIdOnly = await prisma.reply.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ReplyUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, ReplyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one Reply.
+     * @param {ReplyUpsertArgs} args - Arguments to update or create a Reply.
+     * @example
+     * // Update or create a Reply
+     * const reply = await prisma.reply.upsert({
+     *   create: {
+     *     // ... data to create a Reply
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Reply we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReplyUpsertArgs>(args: Prisma.SelectSubset<T, ReplyUpsertArgs<ExtArgs>>): Prisma.Prisma__ReplyClient<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of Replies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReplyCountArgs} args - Arguments to filter Replies to count.
+     * @example
+     * // Count the number of Replies
+     * const count = await prisma.reply.count({
+     *   where: {
+     *     // ... the filter for the Replies we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReplyCountArgs>(args?: Prisma.Subset<T, ReplyCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], ReplyCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a Reply.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReplyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReplyAggregateArgs>(args: Prisma.Subset<T, ReplyAggregateArgs>): Prisma.PrismaPromise<GetReplyAggregateType<T>>;
+    /**
+     * Group by Reply.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReplyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends ReplyGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: ReplyGroupByArgs['orderBy'];
+    } : {
+        orderBy?: ReplyGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, ReplyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReplyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the Reply model
+     */
+    readonly fields: ReplyFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for Reply.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__ReplyClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    comment<T extends Prisma.CommentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CommentDefaultArgs<ExtArgs>>): Prisma.Prisma__CommentClient<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    parentReply<T extends Prisma.Reply$parentReplyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reply$parentReplyArgs<ExtArgs>>): Prisma.Prisma__ReplyClient<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    childReplies<T extends Prisma.Reply$childRepliesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reply$childRepliesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the Reply model
+ */
+export interface ReplyFieldRefs {
+    readonly id: Prisma.FieldRef<"Reply", 'BigInt'>;
+    readonly uuid: Prisma.FieldRef<"Reply", 'String'>;
+    readonly commentId: Prisma.FieldRef<"Reply", 'BigInt'>;
+    readonly userId: Prisma.FieldRef<"Reply", 'BigInt'>;
+    readonly parentReplyId: Prisma.FieldRef<"Reply", 'BigInt'>;
+    readonly content: Prisma.FieldRef<"Reply", 'String'>;
+    readonly isDeleted: Prisma.FieldRef<"Reply", 'Boolean'>;
+    readonly likeCount: Prisma.FieldRef<"Reply", 'BigInt'>;
+    readonly createdAt: Prisma.FieldRef<"Reply", 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<"Reply", 'DateTime'>;
+}
+/**
+ * Reply findUnique
+ */
+export type ReplyFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyInclude<ExtArgs> | null;
+    /**
+     * Filter, which Reply to fetch.
+     */
+    where: Prisma.ReplyWhereUniqueInput;
+};
+/**
+ * Reply findUniqueOrThrow
+ */
+export type ReplyFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyInclude<ExtArgs> | null;
+    /**
+     * Filter, which Reply to fetch.
+     */
+    where: Prisma.ReplyWhereUniqueInput;
+};
+/**
+ * Reply findFirst
+ */
+export type ReplyFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyInclude<ExtArgs> | null;
+    /**
+     * Filter, which Reply to fetch.
+     */
+    where?: Prisma.ReplyWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of Replies to fetch.
+     */
+    orderBy?: Prisma.ReplyOrderByWithRelationInput | Prisma.ReplyOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for Replies.
+     */
+    cursor?: Prisma.ReplyWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` Replies from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` Replies.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of Replies.
+     */
+    distinct?: Prisma.ReplyScalarFieldEnum | Prisma.ReplyScalarFieldEnum[];
+};
+/**
+ * Reply findFirstOrThrow
+ */
+export type ReplyFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyInclude<ExtArgs> | null;
+    /**
+     * Filter, which Reply to fetch.
+     */
+    where?: Prisma.ReplyWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of Replies to fetch.
+     */
+    orderBy?: Prisma.ReplyOrderByWithRelationInput | Prisma.ReplyOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for Replies.
+     */
+    cursor?: Prisma.ReplyWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` Replies from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` Replies.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of Replies.
+     */
+    distinct?: Prisma.ReplyScalarFieldEnum | Prisma.ReplyScalarFieldEnum[];
+};
+/**
+ * Reply findMany
+ */
+export type ReplyFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyInclude<ExtArgs> | null;
+    /**
+     * Filter, which Replies to fetch.
+     */
+    where?: Prisma.ReplyWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of Replies to fetch.
+     */
+    orderBy?: Prisma.ReplyOrderByWithRelationInput | Prisma.ReplyOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing Replies.
+     */
+    cursor?: Prisma.ReplyWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` Replies from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` Replies.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of Replies.
+     */
+    distinct?: Prisma.ReplyScalarFieldEnum | Prisma.ReplyScalarFieldEnum[];
+};
+/**
+ * Reply create
+ */
+export type ReplyCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a Reply.
+     */
+    data: Prisma.XOR<Prisma.ReplyCreateInput, Prisma.ReplyUncheckedCreateInput>;
+};
+/**
+ * Reply createMany
+ */
+export type ReplyCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Replies.
+     */
+    data: Prisma.ReplyCreateManyInput | Prisma.ReplyCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * Reply createManyAndReturn
+ */
+export type ReplyCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * The data used to create many Replies.
+     */
+    data: Prisma.ReplyCreateManyInput | Prisma.ReplyCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyIncludeCreateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * Reply update
+ */
+export type ReplyUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a Reply.
+     */
+    data: Prisma.XOR<Prisma.ReplyUpdateInput, Prisma.ReplyUncheckedUpdateInput>;
+    /**
+     * Choose, which Reply to update.
+     */
+    where: Prisma.ReplyWhereUniqueInput;
+};
+/**
+ * Reply updateMany
+ */
+export type ReplyUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Replies.
+     */
+    data: Prisma.XOR<Prisma.ReplyUpdateManyMutationInput, Prisma.ReplyUncheckedUpdateManyInput>;
+    /**
+     * Filter which Replies to update
+     */
+    where?: Prisma.ReplyWhereInput;
+    /**
+     * Limit how many Replies to update.
+     */
+    limit?: number;
+};
+/**
+ * Reply updateManyAndReturn
+ */
+export type ReplyUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * The data used to update Replies.
+     */
+    data: Prisma.XOR<Prisma.ReplyUpdateManyMutationInput, Prisma.ReplyUncheckedUpdateManyInput>;
+    /**
+     * Filter which Replies to update
+     */
+    where?: Prisma.ReplyWhereInput;
+    /**
+     * Limit how many Replies to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyIncludeUpdateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * Reply upsert
+ */
+export type ReplyUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the Reply to update in case it exists.
+     */
+    where: Prisma.ReplyWhereUniqueInput;
+    /**
+     * In case the Reply found by the `where` argument doesn't exist, create a new Reply with this data.
+     */
+    create: Prisma.XOR<Prisma.ReplyCreateInput, Prisma.ReplyUncheckedCreateInput>;
+    /**
+     * In case the Reply was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.ReplyUpdateInput, Prisma.ReplyUncheckedUpdateInput>;
+};
+/**
+ * Reply delete
+ */
+export type ReplyDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyInclude<ExtArgs> | null;
+    /**
+     * Filter which Reply to delete.
+     */
+    where: Prisma.ReplyWhereUniqueInput;
+};
+/**
+ * Reply deleteMany
+ */
+export type ReplyDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which Replies to delete
+     */
+    where?: Prisma.ReplyWhereInput;
+    /**
+     * Limit how many Replies to delete.
+     */
+    limit?: number;
+};
+/**
+ * Reply.parentReply
+ */
+export type Reply$parentReplyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyInclude<ExtArgs> | null;
+    where?: Prisma.ReplyWhereInput;
+};
+/**
+ * Reply.childReplies
+ */
+export type Reply$childRepliesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyInclude<ExtArgs> | null;
+    where?: Prisma.ReplyWhereInput;
+    orderBy?: Prisma.ReplyOrderByWithRelationInput | Prisma.ReplyOrderByWithRelationInput[];
+    cursor?: Prisma.ReplyWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.ReplyScalarFieldEnum | Prisma.ReplyScalarFieldEnum[];
+};
+/**
+ * Reply without action
+ */
+export type ReplyDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Reply
+     */
+    select?: Prisma.ReplySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Reply
+     */
+    omit?: Prisma.ReplyOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ReplyInclude<ExtArgs> | null;
+};
+//# sourceMappingURL=Reply.d.ts.map
