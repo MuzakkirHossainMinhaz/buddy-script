@@ -11,6 +11,7 @@ import { requestLogger } from './middlewares/logging.middleware.js';
 import { apiRateLimiter } from './middlewares/rateLimit.middleware.js';
 import { uploadsDir } from './middlewares/upload.middleware.js';
 import routes from './routes/index.js';
+import { connectRedis } from './config/redis.config.js';
 
 const app = express();
 const isProduction = process.env.NODE_ENV === 'production';
@@ -74,6 +75,21 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+app.get('/', (_req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    service: 'buddy-script-backend',
+  });
+});
+
+// Health check endpoint
+app.get('/health', (_req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Locally uploaded post images
 app.use('/uploads', express.static(uploadsDir, {
   fallthrough: false,
@@ -85,6 +101,15 @@ const sameSite = (process.env.SESSION_COOKIE_SAME_SITE || (isProduction ? 'none'
   | 'lax'
   | 'none'
   | 'strict';
+
+app.use('/api', async (_req, _res, next) => {
+  try {
+    await connectRedis();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.use(
   session({
@@ -104,14 +129,6 @@ app.use(
 
 // Request logging
 app.use(requestLogger);
-
-// Health check endpoint
-app.get('/health', (_req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-  });
-});
 
 // API rate limiter (global for all /api routes)
 app.use('/api', apiRateLimiter);
