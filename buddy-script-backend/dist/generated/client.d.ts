@@ -46,4 +46,14 @@ export type Reply = Prisma.ReplyModel;
  *
  */
 export type Like = Prisma.LikeModel;
+/**
+ * Model OutboxEvent
+ *
+ */
+export type OutboxEvent = Prisma.OutboxEventModel;
+/**
+ * Model CounterDelta
+ *
+ */
+export type CounterDelta = Prisma.CounterDeltaModel;
 //# sourceMappingURL=client.d.ts.map

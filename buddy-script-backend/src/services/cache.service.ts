@@ -40,10 +40,38 @@ export class CacheService {
   }
 
   /**
+   * Read a small integer namespace version used to make cache invalidation O(1).
+   */
+  async getNamespaceVersion(namespace: string): Promise<number> {
+    try {
+      const version = await ioRedisClient.get(`${namespace}:version`);
+      return version ? parseInt(version, 10) || 1 : 1;
+    } catch (error) {
+      logger.warn('Cache namespace version read failed', { namespace, error });
+      return 1;
+    }
+  }
+
+  /**
+   * Bump a namespace version instead of scanning and deleting every matching key.
+   */
+  async bumpNamespaceVersion(namespace: string): Promise<void> {
+    try {
+      await ioRedisClient.incr(`${namespace}:version`);
+    } catch (error) {
+      logger.warn('Cache namespace version bump failed', { namespace, error });
+    }
+  }
+
+  /**
    * Delete a single key from the cache.
    */
   async del(key: string): Promise<void> {
-    await ioRedisClient.del(key);
+    try {
+      await ioRedisClient.del(key);
+    } catch (error) {
+      logger.warn('Cache delete failed', { key, error });
+    }
   }
 
   /**
@@ -53,20 +81,24 @@ export class CacheService {
    * @param pattern - Glob pattern (e.g. `posts:*`)
    */
   async invalidate(pattern: string): Promise<void> {
-    let cursor = '0';
-    do {
-      const [nextCursor, keys] = await ioRedisClient.scan(
-        cursor,
-        'MATCH',
-        pattern,
-        'COUNT',
-        100,
-      );
-      cursor = nextCursor;
-      if (keys.length > 0) {
-        await ioRedisClient.del(...keys);
-      }
-    } while (cursor !== '0');
+    try {
+      let cursor = '0';
+      do {
+        const [nextCursor, keys] = await ioRedisClient.scan(
+          cursor,
+          'MATCH',
+          pattern,
+          'COUNT',
+          100,
+        );
+        cursor = nextCursor;
+        if (keys.length > 0) {
+          await ioRedisClient.del(...keys);
+        }
+      } while (cursor !== '0');
+    } catch (error) {
+      logger.warn('Cache invalidation failed', { pattern, error });
+    }
   }
 }
 

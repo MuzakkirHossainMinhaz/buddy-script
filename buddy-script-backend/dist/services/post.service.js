@@ -1,8 +1,13 @@
-import { prisma } from '../config/database.js';
+import { prisma, prismaRead } from '../config/database.js';
 import { logger } from '../config/logger.config.js';
 import { ForbiddenError, NotFoundError } from '../utils/errors.js';
 import { sanitizeContent } from '../utils/helpers.js';
+import { encodeKeysetCursor, keysetWhere, parseKeysetCursor, } from '../utils/cursor.js';
+import { cacheService } from './cache.service.js';
+import { outboxService } from './outbox.service.js';
 import { visibilityService } from './visibility.service.js';
+const PUBLIC_FEED_CACHE_TTL_SECONDS = parseInt(process.env.FEED_CACHE_TTL_SECONDS || '30', 10);
+const PUBLIC_FEED_CACHE_NAMESPACE = 'feed:public';
 /** Minimal author shape included with every post. */
 const authorSelect = {
     id: true,
@@ -19,16 +24,22 @@ export class PostService {
      */
     async getPublicFeed(limit, sort, cursor, currentUserId) {
         const orderBy = sort === 'oldest' ? 'asc' : 'desc';
-        const results = await prisma.post.findMany({
-            where: { privacyType: 'public', isDeleted: false },
+        const parsedCursor = await parseKeysetCursor(cursor, 'post');
+        const cacheVersion = await cacheService.getNamespaceVersion(PUBLIC_FEED_CACHE_NAMESPACE);
+        const cacheKey = `${PUBLIC_FEED_CACHE_NAMESPACE}:v${cacheVersion}:${sort}:${limit}:${cursor ?? 'first'}`;
+        const results = await cacheService.getOrSet(cacheKey, PUBLIC_FEED_CACHE_TTL_SECONDS, () => prismaRead.post.findMany({
+            where: {
+                privacyType: 'public',
+                isDeleted: false,
+                ...keysetWhere(sort, parsedCursor),
+            },
             include: { user: { select: authorSelect } },
             orderBy: [{ createdAt: orderBy }, { id: orderBy }],
-            cursor: cursor ? { uuid: cursor } : undefined,
-            skip: cursor ? 1 : 0,
             take: limit + 1,
-        });
-        const posts = results.slice(0, limit);
-        const nextCursor = results.length > limit ? posts.at(-1)?.uuid ?? null : null;
+        }));
+        const normalizedResults = results.map((post) => this.normalizeCachedPost(post));
+        const posts = normalizedResults.slice(0, limit);
+        const nextCursor = normalizedResults.length > limit ? encodeKeysetCursor(posts.at(-1)) : null;
         const postsWithLike = await this.attachIsLikedByMe(posts, 'post', currentUserId);
         return { posts: postsWithLike, nextCursor };
     }
@@ -37,16 +48,19 @@ export class PostService {
      */
     async getMyPosts(userId, limit, sort, cursor) {
         const orderBy = sort === 'oldest' ? 'asc' : 'desc';
-        const results = await prisma.post.findMany({
-            where: { userId, isDeleted: false },
+        const parsedCursor = await parseKeysetCursor(cursor, 'post');
+        const results = await prismaRead.post.findMany({
+            where: {
+                userId,
+                isDeleted: false,
+                ...keysetWhere(sort, parsedCursor),
+            },
             include: { user: { select: authorSelect } },
             orderBy: [{ createdAt: orderBy }, { id: orderBy }],
-            cursor: cursor ? { uuid: cursor } : undefined,
-            skip: cursor ? 1 : 0,
             take: limit + 1,
         });
         const posts = results.slice(0, limit);
-        const nextCursor = results.length > limit ? posts.at(-1)?.uuid ?? null : null;
+        const nextCursor = results.length > limit ? encodeKeysetCursor(posts.at(-1)) : null;
         const postsWithLike = await this.attachIsLikedByMe(posts, 'post', userId);
         return { posts: postsWithLike, nextCursor };
     }
@@ -66,20 +80,31 @@ export class PostService {
             : false;
         return { ...post, isLikedByMe };
     }
+    async invalidatePublicFeedCache() {
+        await cacheService.bumpNamespaceVersion(PUBLIC_FEED_CACHE_NAMESPACE);
+    }
     /**
      * Create a new post for the given user.
      * Content is sanitized before persisting.
      */
     async createPost(userId, data) {
         const sanitized = sanitizeContent(data.content);
-        const post = await prisma.post.create({
-            data: {
-                userId,
-                content: sanitized,
-                imageUrl: data.imageUrl,
-                privacyType: data.privacyType,
-            },
-            include: { user: { select: authorSelect } },
+        const post = await prisma.$transaction(async (tx) => {
+            const created = await tx.post.create({
+                data: {
+                    userId,
+                    content: sanitized,
+                    imageUrl: data.imageUrl,
+                    privacyType: data.privacyType,
+                },
+                include: { user: { select: authorSelect } },
+            });
+            await outboxService.enqueue('post.created', created.id, {
+                postId: created.id.toString(),
+                userId: userId.toString(),
+                privacyType: created.privacyType,
+            }, tx);
+            return created;
         });
         logger.info('Post created', {
             postId: post.id.toString(),
@@ -108,10 +133,18 @@ export class PostService {
         if (data.privacyType !== undefined) {
             updateData.privacyType = data.privacyType;
         }
-        const updated = await prisma.post.update({
-            where: { id: post.id },
-            data: updateData,
-            include: { user: { select: authorSelect } },
+        const updated = await prisma.$transaction(async (tx) => {
+            const result = await tx.post.update({
+                where: { id: post.id },
+                data: updateData,
+                include: { user: { select: authorSelect } },
+            });
+            await outboxService.enqueue('post.updated', post.id, {
+                postId: post.id.toString(),
+                userId: userId.toString(),
+                privacyType: result.privacyType,
+            }, tx);
+            return result;
         });
         logger.info('Post updated', { postId: post.id.toString() });
         return updated;
@@ -130,13 +163,33 @@ export class PostService {
         if (post.userId !== userId) {
             throw new ForbiddenError('You can only delete your own posts');
         }
-        await prisma.post.update({
-            where: { id: post.id },
-            data: { isDeleted: true },
+        await prisma.$transaction(async (tx) => {
+            await tx.post.update({
+                where: { id: post.id },
+                data: { isDeleted: true },
+            });
+            await outboxService.enqueue('post.deleted', post.id, {
+                postId: post.id.toString(),
+                userId: userId.toString(),
+            }, tx);
         });
         logger.info('Post soft-deleted', { postId: post.id.toString() });
     }
     // Private Helpers Functions
+    normalizeCachedPost(post) {
+        return {
+            ...post,
+            id: typeof post.id === 'bigint' ? post.id : BigInt(post.id),
+            likeCount: typeof post.likeCount === 'bigint' ? post.likeCount : BigInt(post.likeCount),
+            commentCount: typeof post.commentCount === 'bigint' ? post.commentCount : BigInt(post.commentCount),
+            createdAt: post.createdAt instanceof Date ? post.createdAt : new Date(post.createdAt),
+            updatedAt: post.updatedAt instanceof Date ? post.updatedAt : new Date(post.updatedAt),
+            user: {
+                ...post.user,
+                id: typeof post.user.id === 'bigint' ? post.user.id : BigInt(post.user.id),
+            },
+        };
+    }
     /**
      * Attach an `isLikedByMe` boolean to every item in a list.
      *

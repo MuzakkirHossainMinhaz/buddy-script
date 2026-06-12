@@ -57,6 +57,8 @@ export declare class LikeService {
      * conditions or stale data.
      */
     private decrementLikeCount;
+    private getCurrentLikeCount;
+    private enqueueCounterDelta;
 }
 export declare const likeService: LikeService;
 export {};

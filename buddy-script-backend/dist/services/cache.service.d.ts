@@ -17,6 +17,14 @@ export declare class CacheService {
      */
     getOrSet<T>(key: string, ttlSeconds: number, fetchFn: () => Promise<T>): Promise<T>;
     /**
+     * Read a small integer namespace version used to make cache invalidation O(1).
+     */
+    getNamespaceVersion(namespace: string): Promise<number>;
+    /**
+     * Bump a namespace version instead of scanning and deleting every matching key.
+     */
+    bumpNamespaceVersion(namespace: string): Promise<void>;
+    /**
      * Delete a single key from the cache.
      */
     del(key: string): Promise<void>;

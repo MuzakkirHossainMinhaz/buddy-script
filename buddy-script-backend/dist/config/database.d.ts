@@ -1,4 +1,5 @@
 declare const prisma: import("../generated/internal/class.js").PrismaClient<never, import("../generated/internal/prismaNamespace.js").GlobalOmitConfig | undefined, import("@prisma/client/runtime/client").DefaultArgs>;
+declare const prismaRead: import("../generated/internal/class.js").PrismaClient<never, import("../generated/internal/prismaNamespace.js").GlobalOmitConfig | undefined, import("@prisma/client/runtime/client").DefaultArgs>;
 declare function disconnectDatabase(): Promise<void>;
-export { disconnectDatabase, prisma };
+export { disconnectDatabase, prisma, prismaRead };
 //# sourceMappingURL=database.d.ts.map

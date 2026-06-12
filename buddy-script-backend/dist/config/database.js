@@ -3,23 +3,34 @@ import { Pool } from 'pg';
 import { PrismaClient } from '../generated/client.js';
 import { logger } from './logger.config.js';
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const pool = new Pool({
+const poolMax = parseInt(process.env.DB_POOL_MAX || (isDevelopment ? '10' : '3'), 10);
+const writePool = new Pool({
     connectionString: process.env.DATABASE_URL,
+    max: poolMax,
 });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({
-    adapter,
-    log: isDevelopment
-        ? [
-            { emit: 'event', level: 'query' },
-            { emit: 'event', level: 'error' },
-            { emit: 'event', level: 'warn' },
-        ]
-        : [
-            { emit: 'event', level: 'error' },
-            { emit: 'event', level: 'warn' },
-        ],
+const readPool = new Pool({
+    connectionString: process.env.DATABASE_READ_URL || process.env.DATABASE_URL,
+    max: poolMax,
 });
+function createPrismaClient(pool) {
+    return new PrismaClient({
+        adapter: new PrismaPg(pool),
+        log: isDevelopment
+            ? [
+                { emit: 'event', level: 'query' },
+                { emit: 'event', level: 'error' },
+                { emit: 'event', level: 'warn' },
+            ]
+            : [
+                { emit: 'event', level: 'error' },
+                { emit: 'event', level: 'warn' },
+            ],
+    });
+}
+const prisma = createPrismaClient(writePool);
+const prismaRead = process.env.DATABASE_READ_URL
+    ? createPrismaClient(readPool)
+    : prisma;
 prisma.$on('error', (event) => {
     logger.error('Prisma error', { message: event.message, target: event.target });
 });
@@ -38,6 +49,9 @@ if (isDevelopment) {
 async function disconnectDatabase() {
     try {
         await prisma.$disconnect();
+        if (prismaRead !== prisma) {
+            await prismaRead.$disconnect();
+        }
         logger.info('Database disconnected successfully');
     }
     catch (error) {
@@ -45,8 +59,11 @@ async function disconnectDatabase() {
         throw error;
     }
     finally {
-        await pool.end();
+        await writePool.end();
+        if (readPool !== writePool) {
+            await readPool.end();
+        }
     }
 }
-export { disconnectDatabase, prisma };
+export { disconnectDatabase, prisma, prismaRead };
 //# sourceMappingURL=database.js.map

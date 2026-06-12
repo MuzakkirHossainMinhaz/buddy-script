@@ -2,7 +2,9 @@ import { prisma } from '../config/database.js';
 import { logger } from '../config/logger.config.js';
 import { ForbiddenError } from '../utils/errors.js';
 import { sanitizeContent } from '../utils/helpers.js';
+import { encodeKeysetCursor, keysetWhere, parseKeysetCursor, } from '../utils/cursor.js';
 import { visibilityService } from './visibility.service.js';
+import { outboxService } from './outbox.service.js';
 const authorSelect = {
     id: true,
     uuid: true,
@@ -22,8 +24,13 @@ export class CommentService {
     async getCommentsByPost(postUuid, limit, sort, cursor, currentUserId) {
         const post = await visibilityService.getVisiblePostByUuid(postUuid, currentUserId);
         const orderBy = sort === 'oldest' ? 'asc' : 'desc';
+        const parsedCursor = await parseKeysetCursor(cursor, 'comment');
         const results = await prisma.comment.findMany({
-            where: { postId: post.id, isDeleted: false },
+            where: {
+                postId: post.id,
+                isDeleted: false,
+                ...keysetWhere(sort, parsedCursor),
+            },
             include: {
                 user: { select: authorSelect },
                 replies: {
@@ -34,12 +41,10 @@ export class CommentService {
                 },
             },
             orderBy: [{ createdAt: orderBy }, { id: orderBy }],
-            cursor: cursor ? { uuid: cursor } : undefined,
-            skip: cursor ? 1 : 0,
             take: limit + 1,
         });
         const comments = results.slice(0, limit);
-        const nextCursor = results.length > limit ? comments.at(-1)?.uuid ?? null : null;
+        const nextCursor = results.length > limit ? encodeKeysetCursor(comments.at(-1)) : null;
         const commentsWithLike = await this.attachIsLikedByMe(comments, 'comment', currentUserId);
         return { comments: commentsWithLike, nextCursor };
     }
@@ -68,6 +73,11 @@ export class CommentService {
                 where: { id: post.id },
                 data: { commentCount: { increment: 1 } },
             });
+            await outboxService.enqueue('comment.created', created.id, {
+                commentId: created.id.toString(),
+                postId: post.id.toString(),
+                userId: userId.toString(),
+            }, tx);
             return created;
         });
         logger.info('Comment created', {
@@ -116,6 +126,11 @@ export class CommentService {
                 where: { id: comment.postId },
                 data: { commentCount: { decrement: 1 } },
             });
+            await outboxService.enqueue('comment.deleted', comment.id, {
+                commentId: comment.id.toString(),
+                postId: comment.postId.toString(),
+                userId: userId.toString(),
+            }, tx);
         });
         logger.info('Comment soft-deleted', { commentId: comment.id.toString() });
     }

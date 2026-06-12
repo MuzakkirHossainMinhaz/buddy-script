@@ -1,5 +1,5 @@
 import type { PostPrivacy } from '../generated/enums.js';
-type SortOrder = 'newest' | 'oldest';
+import { type SortOrder } from '../utils/cursor.js';
 export declare class PostService {
     /**
      * Paginated feed of all public, non-deleted posts.
@@ -8,28 +8,7 @@ export declare class PostService {
      * resolved via a single batched query against the polymorphic Like table.
      */
     getPublicFeed(limit: number, sort: SortOrder, cursor?: string, currentUserId?: bigint): Promise<{
-        posts: ({
-            user: {
-                id: bigint;
-                uuid: string;
-                firstName: string;
-                lastName: string;
-            };
-        } & {
-            id: bigint;
-            uuid: string;
-            createdAt: Date;
-            updatedAt: Date;
-            userId: bigint;
-            isDeleted: boolean;
-            content: string;
-            imageUrl: string | null;
-            privacyType: PostPrivacy;
-            likeCount: bigint;
-            commentCount: bigint;
-        } & {
-            isLikedByMe: boolean;
-        })[];
+        posts: any[];
         nextCursor: string | null;
     }>;
     /**
@@ -49,10 +28,10 @@ export declare class PostService {
             createdAt: Date;
             updatedAt: Date;
             userId: bigint;
-            isDeleted: boolean;
             content: string;
             imageUrl: string | null;
             privacyType: PostPrivacy;
+            isDeleted: boolean;
             likeCount: bigint;
             commentCount: bigint;
         } & {
@@ -82,13 +61,14 @@ export declare class PostService {
         createdAt: Date;
         updatedAt: Date;
         userId: bigint;
-        isDeleted: boolean;
         content: string;
         imageUrl: string | null;
         privacyType: PostPrivacy;
+        isDeleted: boolean;
         likeCount: bigint;
         commentCount: bigint;
     }>;
+    invalidatePublicFeedCache(): Promise<void>;
     /**
      * Create a new post for the given user.
      * Content is sanitized before persisting.
@@ -97,26 +77,7 @@ export declare class PostService {
         content: string;
         imageUrl?: string;
         privacyType: PostPrivacy;
-    }): Promise<{
-        user: {
-            id: bigint;
-            uuid: string;
-            firstName: string;
-            lastName: string;
-        };
-    } & {
-        id: bigint;
-        uuid: string;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: bigint;
-        isDeleted: boolean;
-        content: string;
-        imageUrl: string | null;
-        privacyType: PostPrivacy;
-        likeCount: bigint;
-        commentCount: bigint;
-    }>;
+    }): Promise<any>;
     /**
      * Update an existing post. Only the author may update.
      *
@@ -126,26 +87,7 @@ export declare class PostService {
     updatePost(postUuid: string, userId: bigint, data: {
         content?: string;
         privacyType?: PostPrivacy;
-    }): Promise<{
-        user: {
-            id: bigint;
-            uuid: string;
-            firstName: string;
-            lastName: string;
-        };
-    } & {
-        id: bigint;
-        uuid: string;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: bigint;
-        isDeleted: boolean;
-        content: string;
-        imageUrl: string | null;
-        privacyType: PostPrivacy;
-        likeCount: bigint;
-        commentCount: bigint;
-    }>;
+    }): Promise<any>;
     /**
      * Soft-delete a post. Only the author may delete.
      *
@@ -153,6 +95,7 @@ export declare class PostService {
      * @throws {ForbiddenError} if the caller is not the author
      */
     deletePost(postUuid: string, userId: bigint): Promise<void>;
+    private normalizeCachedPost;
     /**
      * Attach an `isLikedByMe` boolean to every item in a list.
      *
@@ -167,5 +110,4 @@ export declare class PostService {
     private checkSingleLike;
 }
 export declare const postService: PostService;
-export {};
 //# sourceMappingURL=post.service.d.ts.map

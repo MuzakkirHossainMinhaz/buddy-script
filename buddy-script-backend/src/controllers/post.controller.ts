@@ -84,6 +84,7 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
     imageUrl,
     privacyType: req.body.privacyType as PostPrivacy,
   });
+  await postService.invalidatePublicFeedCache();
 
   res.status(201).json({
     success: true,
@@ -98,6 +99,7 @@ export const updatePost = async (req: Request, res: Response): Promise<void> => 
     ...req.body,
     privacyType: req.body.privacyType as PostPrivacy | undefined,
   });
+  await postService.invalidatePublicFeedCache();
 
   const isLikedByMe = Boolean((post as { isLikedByMe?: boolean }).isLikedByMe);
 
@@ -111,6 +113,7 @@ export const deletePost = async (req: Request, res: Response): Promise<void> => 
   const { postId } = req.params;
 
   await postService.deletePost(postId as string, req.user!.id);
+  await postService.invalidatePublicFeedCache();
 
   res.status(200).json({
     success: true,

@@ -1,6 +1,7 @@
 import { prisma } from '../config/database.js';
 import { logger } from '../config/logger.config.js';
 import { ConflictError, NotFoundError, ValidationError } from '../utils/errors.js';
+import { outboxService } from './outbox.service.js';
 import { visibilityService } from './visibility.service.js';
 export class LikeService {
     /**
@@ -28,6 +29,11 @@ export class LikeService {
                 data: { userId, targetType, targetId },
             });
             const count = await this.incrementLikeCount(tx, targetType, targetId);
+            await outboxService.enqueue('like.created', targetId, {
+                userId: userId.toString(),
+                targetType,
+                targetId: targetId.toString(),
+            }, tx);
             return count;
         });
         logger.info('Target liked', {
@@ -60,6 +66,11 @@ export class LikeService {
                 },
             });
             const count = await this.decrementLikeCount(tx, targetType, targetId);
+            await outboxService.enqueue('like.deleted', targetId, {
+                userId: userId.toString(),
+                targetType,
+                targetId: targetId.toString(),
+            }, tx);
             return count;
         });
         logger.info('Target unliked', {
@@ -148,6 +159,11 @@ export class LikeService {
      * Increment `likeCount` on the target model and return the new count.
      */
     async incrementLikeCount(tx, targetType, targetId) {
+        if (process.env.COUNTER_WRITE_MODE === 'buffered') {
+            const current = await this.getCurrentLikeCount(tx, targetType, targetId);
+            await this.enqueueCounterDelta(tx, targetType, targetId, 'like_count', 1);
+            return current + 1n;
+        }
         switch (targetType) {
             case 'post': {
                 const p = await tx.post.update({
@@ -187,6 +203,11 @@ export class LikeService {
      * conditions or stale data.
      */
     async decrementLikeCount(tx, targetType, targetId) {
+        if (process.env.COUNTER_WRITE_MODE === 'buffered') {
+            const current = await this.getCurrentLikeCount(tx, targetType, targetId);
+            await this.enqueueCounterDelta(tx, targetType, targetId, 'like_count', -1);
+            return current > 0n ? current - 1n : 0n;
+        }
         switch (targetType) {
             case 'post': {
                 const current = await tx.post.findUniqueOrThrow({
@@ -238,6 +259,41 @@ export class LikeService {
                 throw new NotFoundError(`Unknown target type: ${String(_exhaustive)}`);
             }
         }
+    }
+    async getCurrentLikeCount(tx, targetType, targetId) {
+        switch (targetType) {
+            case 'post': {
+                const post = await tx.post.findUniqueOrThrow({
+                    where: { id: targetId },
+                    select: { likeCount: true },
+                });
+                return BigInt(post.likeCount);
+            }
+            case 'comment': {
+                const comment = await tx.comment.findUniqueOrThrow({
+                    where: { id: targetId },
+                    select: { likeCount: true },
+                });
+                return BigInt(comment.likeCount);
+            }
+            case 'reply': {
+                const reply = await tx.reply.findUniqueOrThrow({
+                    where: { id: targetId },
+                    select: { likeCount: true },
+                });
+                return BigInt(reply.likeCount);
+            }
+            default: {
+                const _exhaustive = targetType;
+                throw new NotFoundError(`Unknown target type: ${String(_exhaustive)}`);
+            }
+        }
+    }
+    async enqueueCounterDelta(tx, targetType, targetId, fieldName, delta) {
+        await tx.$executeRaw `
+      INSERT INTO counter_deltas (target_type, target_id, field_name, delta)
+      VALUES (${targetType}, ${targetId}, ${fieldName}, ${delta})
+    `;
     }
 }
 export const likeService = new LikeService();

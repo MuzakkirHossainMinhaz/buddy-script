@@ -2,6 +2,7 @@ import { prisma } from '../config/database.js';
 import { logger } from '../config/logger.config.js';
 import type { LikeTargetType } from '../generated/enums.js';
 import { ConflictError, NotFoundError, ValidationError } from '../utils/errors.js';
+import { outboxService } from './outbox.service.js';
 import { visibilityService } from './visibility.service.js';
 
 type TargetType = LikeTargetType;
@@ -55,6 +56,11 @@ export class LikeService {
       });
 
       const count = await this.incrementLikeCount(tx, targetType, targetId);
+      await outboxService.enqueue('like.created', targetId, {
+        userId: userId.toString(),
+        targetType,
+        targetId: targetId.toString(),
+      }, tx);
       return count;
     });
 
@@ -98,6 +104,11 @@ export class LikeService {
       });
 
       const count = await this.decrementLikeCount(tx, targetType, targetId);
+      await outboxService.enqueue('like.deleted', targetId, {
+        userId: userId.toString(),
+        targetType,
+        targetId: targetId.toString(),
+      }, tx);
       return count;
     });
 
@@ -212,6 +223,12 @@ export class LikeService {
     targetType: TargetType,
     targetId: bigint,
   ): Promise<bigint> {
+    if (process.env.COUNTER_WRITE_MODE === 'buffered') {
+      const current = await this.getCurrentLikeCount(tx, targetType, targetId);
+      await this.enqueueCounterDelta(tx, targetType, targetId, 'like_count', 1);
+      return current + 1n;
+    }
+
     switch (targetType) {
       case 'post': {
         const p = await tx.post.update({
@@ -256,6 +273,12 @@ export class LikeService {
     targetType: TargetType,
     targetId: bigint,
   ): Promise<bigint> {
+    if (process.env.COUNTER_WRITE_MODE === 'buffered') {
+      const current = await this.getCurrentLikeCount(tx, targetType, targetId);
+      await this.enqueueCounterDelta(tx, targetType, targetId, 'like_count', -1);
+      return current > 0n ? current - 1n : 0n;
+    }
+
     switch (targetType) {
       case 'post': {
         const current = await tx.post.findUniqueOrThrow({
@@ -310,6 +333,53 @@ export class LikeService {
         throw new NotFoundError(`Unknown target type: ${String(_exhaustive)}`);
       }
     }
+  }
+
+  private async getCurrentLikeCount(
+    tx: TransactionClient,
+    targetType: TargetType,
+    targetId: bigint,
+  ): Promise<bigint> {
+    switch (targetType) {
+      case 'post': {
+        const post = await tx.post.findUniqueOrThrow({
+          where: { id: targetId },
+          select: { likeCount: true },
+        });
+        return BigInt(post.likeCount);
+      }
+      case 'comment': {
+        const comment = await tx.comment.findUniqueOrThrow({
+          where: { id: targetId },
+          select: { likeCount: true },
+        });
+        return BigInt(comment.likeCount);
+      }
+      case 'reply': {
+        const reply = await tx.reply.findUniqueOrThrow({
+          where: { id: targetId },
+          select: { likeCount: true },
+        });
+        return BigInt(reply.likeCount);
+      }
+      default: {
+        const _exhaustive: never = targetType;
+        throw new NotFoundError(`Unknown target type: ${String(_exhaustive)}`);
+      }
+    }
+  }
+
+  private async enqueueCounterDelta(
+    tx: TransactionClient,
+    targetType: TargetType,
+    targetId: bigint,
+    fieldName: 'like_count',
+    delta: 1 | -1,
+  ): Promise<void> {
+    await tx.$executeRaw`
+      INSERT INTO counter_deltas (target_type, target_id, field_name, delta)
+      VALUES (${targetType}, ${targetId}, ${fieldName}, ${delta})
+    `;
   }
 }
 

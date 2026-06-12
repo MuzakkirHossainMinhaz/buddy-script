@@ -1,4 +1,4 @@
-type SortOrder = 'newest' | 'oldest';
+import { type SortOrder } from '../utils/cursor.js';
 export declare class ReplyService {
     /**
      * Paginated replies for a given comment.
@@ -22,8 +22,8 @@ export declare class ReplyService {
             createdAt: Date;
             updatedAt: Date;
             userId: bigint;
-            isDeleted: boolean;
             content: string;
+            isDeleted: boolean;
             likeCount: bigint;
             commentId: bigint;
             parentReplyId: bigint | null;
@@ -67,8 +67,8 @@ export declare class ReplyService {
         createdAt: Date;
         updatedAt: Date;
         userId: bigint;
-        isDeleted: boolean;
         content: string;
+        isDeleted: boolean;
         likeCount: bigint;
         commentId: bigint;
         parentReplyId: bigint | null;
@@ -87,5 +87,4 @@ export declare class ReplyService {
     private attachIsLikedByMe;
 }
 export declare const replyService: ReplyService;
-export {};
 //# sourceMappingURL=reply.service.d.ts.map

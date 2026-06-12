@@ -3,9 +3,14 @@ import { logger } from '../config/logger.config.js';
 import type { LikeTargetType } from '../generated/enums.js';
 import { ForbiddenError, NotFoundError, ValidationError } from '../utils/errors.js';
 import { sanitizeContent } from '../utils/helpers.js';
+import {
+  encodeKeysetCursor,
+  keysetWhere,
+  parseKeysetCursor,
+  type SortOrder,
+} from '../utils/cursor.js';
 import { visibilityService } from './visibility.service.js';
-
-type SortOrder = 'newest' | 'oldest';
+import { outboxService } from './outbox.service.js';
 
 const authorSelect = {
   id: true,
@@ -30,21 +35,24 @@ export class ReplyService {
     const comment = await visibilityService.getVisibleCommentByUuid(commentUuid, currentUserId);
 
     const orderBy = sort === 'oldest' ? 'asc' : 'desc';
+    const parsedCursor = await parseKeysetCursor(cursor, 'reply');
 
     const results = await prisma.reply.findMany({
-      where: { commentId: comment.id, isDeleted: false },
+      where: {
+        commentId: comment.id,
+        isDeleted: false,
+        ...keysetWhere(sort, parsedCursor),
+      },
       include: {
         user: { select: authorSelect },
         parentReply: { select: { uuid: true } },
       },
       orderBy: [{ createdAt: orderBy }, { id: orderBy }],
-      cursor: cursor ? { uuid: cursor } : undefined,
-      skip: cursor ? 1 : 0,
       take: limit + 1,
     });
 
     const replies = results.slice(0, limit);
-    const nextCursor = results.length > limit ? replies.at(-1)?.uuid ?? null : null;
+    const nextCursor = results.length > limit ? encodeKeysetCursor(replies.at(-1)) : null;
     const repliesWithLike = await this.attachIsLikedByMe(
       replies,
       'reply',
@@ -111,6 +119,13 @@ export class ReplyService {
         data: { replyCount: { increment: 1 } },
       });
 
+      await outboxService.enqueue('reply.created', created.id, {
+        replyId: created.id.toString(),
+        commentId: comment.id.toString(),
+        userId: userId.toString(),
+        parentReplyId: parentReplyId?.toString() ?? null,
+      }, tx);
+
       return created;
     });
 
@@ -175,6 +190,12 @@ export class ReplyService {
         where: { id: reply.commentId },
         data: { replyCount: { decrement: 1 } },
       });
+
+      await outboxService.enqueue('reply.deleted', reply.id, {
+        replyId: reply.id.toString(),
+        commentId: reply.commentId.toString(),
+        userId: userId.toString(),
+      }, tx);
     });
 
     logger.info('Reply soft-deleted', { replyId: reply.id.toString() });

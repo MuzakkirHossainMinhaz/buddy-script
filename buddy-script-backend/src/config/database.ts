@@ -4,24 +4,36 @@ import { PrismaClient } from '../generated/client.js';
 import { logger } from './logger.config.js';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const pool = new Pool({
+const poolMax = parseInt(process.env.DB_POOL_MAX || (isDevelopment ? '10' : '3'), 10);
+const writePool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  max: poolMax,
 });
-const adapter = new PrismaPg(pool);
+const readPool = new Pool({
+  connectionString: process.env.DATABASE_READ_URL || process.env.DATABASE_URL,
+  max: poolMax,
+});
 
-const prisma = new PrismaClient({
-  adapter,
-  log: isDevelopment
-    ? [
-      { emit: 'event', level: 'query' },
-      { emit: 'event', level: 'error' },
-      { emit: 'event', level: 'warn' },
-    ]
-    : [
-      { emit: 'event', level: 'error' },
-      { emit: 'event', level: 'warn' },
-    ],
-} as any);
+function createPrismaClient(pool: Pool) {
+  return new PrismaClient({
+    adapter: new PrismaPg(pool),
+    log: isDevelopment
+      ? [
+        { emit: 'event', level: 'query' },
+        { emit: 'event', level: 'error' },
+        { emit: 'event', level: 'warn' },
+      ]
+      : [
+        { emit: 'event', level: 'error' },
+        { emit: 'event', level: 'warn' },
+      ],
+  } as any);
+}
+
+const prisma = createPrismaClient(writePool);
+const prismaRead = process.env.DATABASE_READ_URL
+  ? createPrismaClient(readPool)
+  : prisma;
 
 prisma.$on('error' as never, (event: any) => {
   logger.error('Prisma error', { message: event.message, target: event.target });
@@ -44,14 +56,19 @@ if (isDevelopment) {
 async function disconnectDatabase(): Promise<void> {
   try {
     await prisma.$disconnect();
+    if (prismaRead !== prisma) {
+      await prismaRead.$disconnect();
+    }
     logger.info('Database disconnected successfully');
   } catch (error) {
     logger.error('Error disconnecting database', { error });
     throw error;
   } finally {
-    await pool.end();
+    await writePool.end();
+    if (readPool !== writePool) {
+      await readPool.end();
+    }
   }
 }
 
-export { disconnectDatabase, prisma };
-
+export { disconnectDatabase, prisma, prismaRead };

@@ -43,7 +43,13 @@ Posts, comments, and replies use soft delete flags. I chose soft delete because 
 
 The feed returns public, non-deleted posts ordered by newest first. I used cursor-style pagination instead of offset pagination because offset becomes slower as the table grows.
 
-The ordering uses `created_at` and `id` together. That gives a stable order even when multiple posts are created close together.
+The ordering uses `created_at` and `id` together. That gives a stable order even when multiple posts are created close together. Feed cursors are encoded from the same `(created_at, id)` pair instead of relying only on public UUIDs. The API still accepts the older UUID cursor format so existing clients do not break.
+
+The public feed base query is cached in Redis for a short TTL. The cached value intentionally excludes user-specific state; after loading the cached page, the service performs a batched like lookup for the current user and attaches `isLikedByMe`. This keeps feed reads cheaper without leaking one user's interaction state to another user.
+
+Post create, update, and delete operations invalidate the public feed cache by bumping a Redis namespace version. Feed cache keys include that version, so invalidation is O(1) and does not scan/delete every `feed:public:*` key during write-heavy periods.
+
+The public feed, my-posts list, comments list, and replies list all use keyset cursors based on `(created_at, id)`. The API still accepts older UUID cursors as a compatibility fallback, but new cursors are index-aligned and stable at large table sizes.
 
 ## Likes
 
@@ -72,7 +78,11 @@ I store counts directly on the parent records:
 
 I made this decision because the feed is read-heavy. Showing a feed should not run count queries across large comment or like tables for every item.
 
-In my early planning I considered database triggers for these counters. In the current implementation I update the counters inside application transactions. That keeps the logic easier to read during review while still keeping the write and counter update atomic.
+In my early planning I considered database triggers for these counters. In the default implementation I update the counters inside application transactions. That keeps the logic easy to read while keeping the write and counter update atomic.
+
+For high-volume interaction workloads, the backend also supports a buffered counter mode with `COUNTER_WRITE_MODE=buffered`. In that mode like/unlike requests write durable `counter_deltas` instead of updating the same hot parent row for every interaction. A production worker can batch those deltas back into the parent count columns. This is useful for viral posts where direct counter writes become a lock-contention bottleneck.
+
+The app also writes durable `outbox_events` for posts, comments, replies, and likes. This table is the handoff point for asynchronous side effects such as fanout feeds, notifications, analytics, search indexing, and cache warming.
 
 ## Comments and Replies
 
@@ -93,7 +103,11 @@ I added indexes around the queries the app actually uses:
 - Likes by target type, target id, created time, and id.
 - Unique likes by user, target type, and target id.
 
-I did not add partitioning, read replicas, sharding, or materialized feed views in this version. Those are valid future options, but they would be over-engineering for the assessment implementation.
+I did not physically partition or shard the tables in this version because that requires production data-volume decisions and operational ownership. The schema is prepared for large tables through bigint ids, keyset query patterns, composite indexes, optional read-replica usage, outbox-driven fanout, and buffered counters. If a deployment grows beyond what single Postgres plus replicas can handle, the natural next step is range/hash partitioning for posts/interactions and a materialized feed table maintained from the outbox.
+
+The database client is configured with a bounded pool size so serverless deployments do not open too many PostgreSQL connections. The app can also use an optional `DATABASE_READ_URL` for read-heavy paths such as the public feed when a read replica or pooled read endpoint is available.
+
+For CDN/API edge caching, the API keeps feed results user-neutral in Redis and attaches user-specific like state after loading the cached page. That separation is intentional: it allows feed pages to be cached aggressively without leaking one user's interaction state to another user. A production CDN can safely cache anonymous/public variants once public unauthenticated feed routes are introduced; authenticated feeds should continue to vary by cookie/session.
 
 ## Security
 
@@ -109,5 +123,8 @@ The security work is mostly practical rather than complicated:
 - Request bodies and query params are validated with Zod.
 - User-generated text is sanitized before saving.
 - Image uploads are limited by size and MIME type.
+- PostgreSQL Row Level Security is enabled on the application tables.
 
-I did not use PostgreSQL Row Level Security in this version. I considered it, but for this assessment I kept the visibility rules in the service layer because they are easier to follow in the codebase and easier to test directly.
+RLS is used as a database-level safety layer, especially because the production database is hosted on Supabase where the `public` schema can be exposed through Supabase APIs. The migration enables RLS on `users`, `posts`, `comments`, `replies`, and `likes`, then revokes table and sequence access from Supabase's `anon` and `authenticated` Postgres roles.
+
+I intentionally did not write per-user RLS policies with `auth.uid()`. This application uses custom Express sessions and Prisma, not Supabase Auth, so Supabase JWT claims are not the source of truth for the current user. The detailed visibility rules still live in the service layer where they can use the app's session user id directly. RLS is there for defense in depth: direct browser access through Supabase roles should not be able to read or mutate the app tables, while the trusted backend connection continues to enforce the application rules.

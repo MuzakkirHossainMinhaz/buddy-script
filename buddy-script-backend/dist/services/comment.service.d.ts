@@ -1,4 +1,4 @@
-type SortOrder = 'newest' | 'oldest';
+import { type SortOrder } from '../utils/cursor.js';
 export declare class CommentService {
     /**
      * Paginated comments for a given post.
@@ -24,8 +24,8 @@ export declare class CommentService {
                 createdAt: Date;
                 updatedAt: Date;
                 userId: bigint;
-                isDeleted: boolean;
                 content: string;
+                isDeleted: boolean;
                 likeCount: bigint;
                 commentId: bigint;
                 parentReplyId: bigint | null;
@@ -42,8 +42,8 @@ export declare class CommentService {
             createdAt: Date;
             updatedAt: Date;
             userId: bigint;
-            isDeleted: boolean;
             content: string;
+            isDeleted: boolean;
             likeCount: bigint;
             postId: bigint;
             replyCount: bigint;
@@ -81,8 +81,8 @@ export declare class CommentService {
         createdAt: Date;
         updatedAt: Date;
         userId: bigint;
-        isDeleted: boolean;
         content: string;
+        isDeleted: boolean;
         likeCount: bigint;
         postId: bigint;
         replyCount: bigint;
@@ -101,5 +101,4 @@ export declare class CommentService {
     private attachIsLikedByMe;
 }
 export declare const commentService: CommentService;
-export {};
 //# sourceMappingURL=comment.service.d.ts.map

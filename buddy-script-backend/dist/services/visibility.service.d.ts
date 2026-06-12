@@ -14,10 +14,10 @@ export declare class VisibilityService {
         createdAt: Date;
         updatedAt: Date;
         userId: bigint;
-        isDeleted: boolean;
         content: string;
         imageUrl: string | null;
         privacyType: import("../generated/enums.js").PostPrivacy;
+        isDeleted: boolean;
         likeCount: bigint;
         commentCount: bigint;
     }>;
@@ -28,10 +28,10 @@ export declare class VisibilityService {
             createdAt: Date;
             updatedAt: Date;
             userId: bigint;
-            isDeleted: boolean;
             content: string;
             imageUrl: string | null;
             privacyType: import("../generated/enums.js").PostPrivacy;
+            isDeleted: boolean;
             likeCount: bigint;
             commentCount: bigint;
         };
@@ -41,8 +41,8 @@ export declare class VisibilityService {
         createdAt: Date;
         updatedAt: Date;
         userId: bigint;
-        isDeleted: boolean;
         content: string;
+        isDeleted: boolean;
         likeCount: bigint;
         postId: bigint;
         replyCount: bigint;
@@ -55,10 +55,10 @@ export declare class VisibilityService {
                 createdAt: Date;
                 updatedAt: Date;
                 userId: bigint;
-                isDeleted: boolean;
                 content: string;
                 imageUrl: string | null;
                 privacyType: import("../generated/enums.js").PostPrivacy;
+                isDeleted: boolean;
                 likeCount: bigint;
                 commentCount: bigint;
             };
@@ -68,8 +68,8 @@ export declare class VisibilityService {
             createdAt: Date;
             updatedAt: Date;
             userId: bigint;
-            isDeleted: boolean;
             content: string;
+            isDeleted: boolean;
             likeCount: bigint;
             postId: bigint;
             replyCount: bigint;
@@ -80,8 +80,8 @@ export declare class VisibilityService {
         createdAt: Date;
         updatedAt: Date;
         userId: bigint;
-        isDeleted: boolean;
         content: string;
+        isDeleted: boolean;
         likeCount: bigint;
         commentId: bigint;
         parentReplyId: bigint | null;

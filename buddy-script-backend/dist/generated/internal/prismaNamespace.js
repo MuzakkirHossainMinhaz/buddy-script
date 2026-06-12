@@ -71,7 +71,9 @@ export const ModelName = {
     Post: 'Post',
     Comment: 'Comment',
     Reply: 'Reply',
-    Like: 'Like'
+    Like: 'Like',
+    OutboxEvent: 'OutboxEvent',
+    CounterDelta: 'CounterDelta'
 };
 /**
  * Enums
@@ -142,9 +144,29 @@ export const LikeScalarFieldEnum = {
     targetId: 'targetId',
     createdAt: 'createdAt'
 };
+export const OutboxEventScalarFieldEnum = {
+    id: 'id',
+    eventName: 'eventName',
+    aggregateId: 'aggregateId',
+    payload: 'payload',
+    processedAt: 'processedAt',
+    createdAt: 'createdAt'
+};
+export const CounterDeltaScalarFieldEnum = {
+    id: 'id',
+    targetType: 'targetType',
+    targetId: 'targetId',
+    fieldName: 'fieldName',
+    delta: 'delta',
+    appliedAt: 'appliedAt',
+    createdAt: 'createdAt'
+};
 export const SortOrder = {
     asc: 'asc',
     desc: 'desc'
+};
+export const JsonNullValueInput = {
+    JsonNull: JsonNull
 };
 export const QueryMode = {
     default: 'default',
@@ -153,6 +175,11 @@ export const QueryMode = {
 export const NullsOrder = {
     first: 'first',
     last: 'last'
+};
+export const JsonNullValueFilter = {
+    DbNull: DbNull,
+    JsonNull: JsonNull,
+    AnyNull: AnyNull
 };
 export const defineExtension = runtime.Extensions.defineExtension;
 //# sourceMappingURL=prismaNamespace.js.map

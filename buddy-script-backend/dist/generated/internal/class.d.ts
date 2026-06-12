@@ -172,6 +172,28 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get like(): Prisma.LikeDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
+    /**
+     * `prisma.outboxEvent`: Exposes CRUD operations for the **OutboxEvent** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more OutboxEvents
+      * const outboxEvents = await prisma.outboxEvent.findMany()
+      * ```
+      */
+    get outboxEvent(): Prisma.OutboxEventDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
+     * `prisma.counterDelta`: Exposes CRUD operations for the **CounterDelta** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more CounterDeltas
+      * const counterDeltas = await prisma.counterDelta.findMany()
+      * ```
+      */
+    get counterDelta(): Prisma.CounterDeltaDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
 }
 export declare function getPrismaClientClass(): PrismaClientConstructor;
 //# sourceMappingURL=class.d.ts.map

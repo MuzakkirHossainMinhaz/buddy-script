@@ -126,3 +126,30 @@ model Like {
   @@index([userId])
   @@map("likes")
 }
+
+model OutboxEvent {
+  id          BigInt    @id @default(autoincrement())
+  eventName   String    @map("event_name")
+  aggregateId BigInt    @map("aggregate_id")
+  payload     Json
+  processedAt DateTime? @map("processed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@index([processedAt, createdAt, id])
+  @@index([eventName, createdAt])
+  @@map("outbox_events")
+}
+
+model CounterDelta {
+  id         BigInt   @id @default(autoincrement())
+  targetType String   @map("target_type")
+  targetId   BigInt   @map("target_id")
+  fieldName  String   @map("field_name")
+  delta      Int
+  appliedAt  DateTime? @map("applied_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([appliedAt, createdAt, id])
+  @@index([targetType, targetId, fieldName, appliedAt])
+  @@map("counter_deltas")
+}

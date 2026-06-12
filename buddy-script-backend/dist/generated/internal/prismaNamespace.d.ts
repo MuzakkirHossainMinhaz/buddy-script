@@ -236,6 +236,8 @@ export declare const ModelName: {
     readonly Comment: "Comment";
     readonly Reply: "Reply";
     readonly Like: "Like";
+    readonly OutboxEvent: "OutboxEvent";
+    readonly CounterDelta: "CounterDelta";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export interface TypeMapCb<GlobalOmitOptions = {}> extends runtime.Types.Utils.Fn<{
@@ -248,7 +250,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "user" | "post" | "comment" | "reply" | "like";
+        modelProps: "user" | "post" | "comment" | "reply" | "like" | "outboxEvent" | "counterDelta";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -622,6 +624,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 };
             };
         };
+        OutboxEvent: {
+            payload: Prisma.$OutboxEventPayload<ExtArgs>;
+            fields: Prisma.OutboxEventFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.OutboxEventFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.OutboxEventFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventPayload>;
+                };
+                findFirst: {
+                    args: Prisma.OutboxEventFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.OutboxEventFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventPayload>;
+                };
+                findMany: {
+                    args: Prisma.OutboxEventFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventPayload>[];
+                };
+                create: {
+                    args: Prisma.OutboxEventCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventPayload>;
+                };
+                createMany: {
+                    args: Prisma.OutboxEventCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.OutboxEventCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventPayload>[];
+                };
+                delete: {
+                    args: Prisma.OutboxEventDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventPayload>;
+                };
+                update: {
+                    args: Prisma.OutboxEventUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.OutboxEventDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.OutboxEventUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.OutboxEventUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventPayload>[];
+                };
+                upsert: {
+                    args: Prisma.OutboxEventUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventPayload>;
+                };
+                aggregate: {
+                    args: Prisma.OutboxEventAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateOutboxEvent>;
+                };
+                groupBy: {
+                    args: Prisma.OutboxEventGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.OutboxEventGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.OutboxEventCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.OutboxEventCountAggregateOutputType> | number;
+                };
+            };
+        };
+        CounterDelta: {
+            payload: Prisma.$CounterDeltaPayload<ExtArgs>;
+            fields: Prisma.CounterDeltaFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.CounterDeltaFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CounterDeltaPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.CounterDeltaFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CounterDeltaPayload>;
+                };
+                findFirst: {
+                    args: Prisma.CounterDeltaFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CounterDeltaPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.CounterDeltaFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CounterDeltaPayload>;
+                };
+                findMany: {
+                    args: Prisma.CounterDeltaFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CounterDeltaPayload>[];
+                };
+                create: {
+                    args: Prisma.CounterDeltaCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CounterDeltaPayload>;
+                };
+                createMany: {
+                    args: Prisma.CounterDeltaCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.CounterDeltaCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CounterDeltaPayload>[];
+                };
+                delete: {
+                    args: Prisma.CounterDeltaDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CounterDeltaPayload>;
+                };
+                update: {
+                    args: Prisma.CounterDeltaUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CounterDeltaPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.CounterDeltaDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.CounterDeltaUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.CounterDeltaUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CounterDeltaPayload>[];
+                };
+                upsert: {
+                    args: Prisma.CounterDeltaUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CounterDeltaPayload>;
+                };
+                aggregate: {
+                    args: Prisma.CounterDeltaAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateCounterDelta>;
+                };
+                groupBy: {
+                    args: Prisma.CounterDeltaGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.CounterDeltaGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.CounterDeltaCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.CounterDeltaCountAggregateOutputType> | number;
+                };
+            };
+        };
     };
 } & {
     other: {
@@ -721,11 +871,34 @@ export declare const LikeScalarFieldEnum: {
     readonly createdAt: "createdAt";
 };
 export type LikeScalarFieldEnum = (typeof LikeScalarFieldEnum)[keyof typeof LikeScalarFieldEnum];
+export declare const OutboxEventScalarFieldEnum: {
+    readonly id: "id";
+    readonly eventName: "eventName";
+    readonly aggregateId: "aggregateId";
+    readonly payload: "payload";
+    readonly processedAt: "processedAt";
+    readonly createdAt: "createdAt";
+};
+export type OutboxEventScalarFieldEnum = (typeof OutboxEventScalarFieldEnum)[keyof typeof OutboxEventScalarFieldEnum];
+export declare const CounterDeltaScalarFieldEnum: {
+    readonly id: "id";
+    readonly targetType: "targetType";
+    readonly targetId: "targetId";
+    readonly fieldName: "fieldName";
+    readonly delta: "delta";
+    readonly appliedAt: "appliedAt";
+    readonly createdAt: "createdAt";
+};
+export type CounterDeltaScalarFieldEnum = (typeof CounterDeltaScalarFieldEnum)[keyof typeof CounterDeltaScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";
 };
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
+export declare const JsonNullValueInput: {
+    readonly JsonNull: runtime.JsonNullClass;
+};
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput];
 export declare const QueryMode: {
     readonly default: "default";
     readonly insensitive: "insensitive";
@@ -736,6 +909,12 @@ export declare const NullsOrder: {
     readonly last: "last";
 };
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
+export declare const JsonNullValueFilter: {
+    readonly DbNull: runtime.DbNullClass;
+    readonly JsonNull: runtime.JsonNullClass;
+    readonly AnyNull: runtime.AnyNullClass;
+};
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter];
 /**
  * Field references
  */
@@ -791,6 +970,14 @@ export type EnumLikeTargetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'LikeTargetType[]'
  */
 export type ListEnumLikeTargetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LikeTargetType[]'>;
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>;
 /**
  * Reference to a field of type 'Float'
  */
@@ -913,6 +1100,8 @@ export type GlobalOmitConfig = {
     comment?: Prisma.CommentOmit;
     reply?: Prisma.ReplyOmit;
     like?: Prisma.LikeOmit;
+    outboxEvent?: Prisma.OutboxEventOmit;
+    counterDelta?: Prisma.CounterDeltaOmit;
 };
 export type LogLevel = 'info' | 'query' | 'warn' | 'error';
 export type LogDefinition = {
