@@ -22,7 +22,7 @@ export default function MyPostsPage() {
   const [postText, setPostText] = useState("");
   const [postImage, setPostImage] = useState<File | null>(null);
   const [privacyType] = useState<PrivacyType>("public");
-  const { data: currentUser, isError: isAuthError } = useGetMeQuery();
+  const { data: currentUser, isLoading: isAuthLoading, isError: isAuthError } = useGetMeQuery();
   const { data: postsData, isLoading: isPostsLoading } = useGetMyPostsQuery({ limit: 20 });
   const [createPost, { isLoading: isCreatingPost }] = useCreatePostMutation();
   const [logout] = useLogoutMutation();
@@ -41,6 +41,40 @@ export default function MyPostsPage() {
       router.replace("/login");
     }
   }, [isAuthError, router]);
+
+  if (isAuthLoading || isAuthError || !currentUser) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: "#f0f2f5" }}>
+        <svg
+          className="_comment_spinner"
+          xmlns="http://www.w3.org/2000/svg"
+          width="40"
+          height="40"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+            fill="none"
+            stroke="#1890FF"
+            strokeWidth="3"
+            strokeDasharray="30 10"
+            strokeLinecap="round"
+          >
+            <animateTransform
+              attributeName="transform"
+              type="rotate"
+              from="0 12 12"
+              to="360 12 12"
+              dur="1s"
+              repeatCount="indefinite"
+            />
+          </circle>
+        </svg>
+      </div>
+    );
+  }
 
   const currentUserName = currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : "Dylan Field";
 
