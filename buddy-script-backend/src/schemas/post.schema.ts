@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 export const CreatePostSchema = z.object({
   content: z.string()
-    .min(1, 'Content is required')
-    .max(5000, 'Content must not exceed 5000 characters'),
+    .max(5000, 'Content must not exceed 5000 characters')
+    .default(''),
   imageUrl: z.string().url('Invalid image URL').optional(),
   privacyType: z.enum(['public', 'private']).default('public'),
 });

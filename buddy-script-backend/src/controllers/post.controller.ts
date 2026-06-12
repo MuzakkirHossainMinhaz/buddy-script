@@ -8,6 +8,7 @@ import {
   formatPostResponse,
   formatUserResponse,
 } from '../utils/helpers.js';
+import { ValidationError } from '../utils/errors.js';
 
 type SortOrder = 'newest' | 'oldest';
 
@@ -65,6 +66,7 @@ export const getPost = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const createPost = async (req: Request, res: Response): Promise<void> => {
+  const content = typeof req.body.content === 'string' ? req.body.content.trim() : '';
   let imageUrl = req.body.imageUrl;
 
   if (req.file) {
@@ -72,8 +74,13 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
     imageUrl = await cloudinaryService.uploadImageBuffer(req.file.buffer);
   }
 
+  if (!content && !imageUrl) {
+    throw new ValidationError('Post must include text or an image');
+  }
+
   const post = await postService.createPost(req.user!.id, {
     ...req.body,
+    content,
     imageUrl,
     privacyType: req.body.privacyType as PostPrivacy,
   });

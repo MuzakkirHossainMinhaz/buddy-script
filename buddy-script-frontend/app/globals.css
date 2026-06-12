@@ -79,6 +79,63 @@ body {
   color: var(--color5) !important;
 }
 
+._bs_post_image_preview {
+  margin-top: 16px;
+  border: 1px solid #eef0f2;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+._bs_post_image_preview_img {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  background: #f7f9fb;
+}
+
+._bs_post_image_preview_meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  color: #666666;
+  font-size: 13px;
+}
+
+._bs_post_image_preview_meta span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+._bs_post_image_preview_remove {
+  border: 0;
+  border-radius: 6px;
+  background: #fff1f0;
+  color: #cf1322;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+._bs_post_image_preview_remove:hover {
+  background: #ffd6d3;
+}
+
+._dark_wrapper ._bs_post_image_preview {
+  border-color: #2b2f36;
+  background: #1f2329;
+}
+
+._dark_wrapper ._bs_post_image_preview_img {
+  background: #15181d;
+}
+
 /* Likers Modal Styles */
 ._bs_modal_overlay {
   position: fixed;
@@ -241,4 +298,4 @@ body {
   to {
     transform: rotate(360deg);
   }
-}
+}
