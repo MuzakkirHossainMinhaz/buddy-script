@@ -14,6 +14,7 @@ import {
 } from "@/lib/api";
 import type { Comment, Post, User, Reply } from "@/lib/types";
 import { FormEvent, KeyboardEvent, useEffect, useState } from "react";
+import { LikersModal } from "./LikersModal";
 
 const nameOf = (user: Pick<User, "firstName" | "lastName">) =>
   `${user.firstName} ${user.lastName}`.trim();
@@ -41,11 +42,13 @@ function ReplyItem({
   commentId,
   depth,
   onAddPendingReply,
+  onClickLikers,
 }: {
   reply: Reply;
   commentId: string;
   depth: number;
   onAddPendingReply?: (parentReplyId: string, content: string) => void;
+  onClickLikers?: (targetId: string, targetType: "post" | "comment" | "reply") => void;
 }) {
   const [optimisticLiked, setOptimisticLiked] = useState(reply.isLikedByMe);
   const [optimisticLikeCount, setOptimisticLikeCount] = useState(reply.likeCount);
@@ -131,7 +134,11 @@ function ReplyItem({
           <div className="_comment_status">
             <p className="_comment_status_text">{reply.content}</p>
           </div>
-          <div className="_total_reactions">
+          <div 
+            className="_total_reactions"
+            style={{ cursor: "pointer" }}
+            onClick={() => onClickLikers?.(reply.id, "reply")}
+          >
             <div className="_total_react">
               <span className="_reaction_like">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-thumbs-up"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
@@ -216,7 +223,13 @@ function ReplyItem({
   );
 }
 
-function CommentItem({ comment }: { comment: Comment }) {
+function CommentItem({
+  comment,
+  onClickLikers,
+}: {
+  comment: Comment;
+  onClickLikers?: (targetId: string, targetType: "post" | "comment" | "reply") => void;
+}) {
   const [optimisticLiked, setOptimisticLiked] = useState(comment.isLikedByMe);
   const [optimisticLikeCount, setOptimisticLikeCount] = useState(comment.likeCount);
   const [likeComment] = useLikeCommentMutation();
@@ -371,7 +384,11 @@ function CommentItem({ comment }: { comment: Comment }) {
             <div className="_comment_status">
               <p className="_comment_status_text">{comment.content}</p>
             </div>
-            <div className="_total_reactions">
+            <div 
+              className="_total_reactions"
+              style={{ cursor: "pointer" }}
+              onClick={() => onClickLikers?.(comment.id, "comment")}
+            >
               <div className="_total_react">
                 <span className="_reaction_like">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-thumbs-up"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
@@ -517,6 +534,7 @@ function CommentItem({ comment }: { comment: Comment }) {
                       commentId={comment.id}
                       depth={2}
                       onAddPendingReply={addPendingReply}
+                      onClickLikers={onClickLikers}
                     />
                     {childReplies.length > 0 && (
                       <div style={{ marginLeft: "30px", marginTop: "8px", width: "calc(100% - 30px)" }}>
@@ -527,6 +545,7 @@ function CommentItem({ comment }: { comment: Comment }) {
                             commentId={comment.id}
                             depth={3}
                             onAddPendingReply={addPendingReply}
+                            onClickLikers={onClickLikers}
                           />
                         ))}
                       </div>
@@ -556,6 +575,24 @@ export function OriginalPostCard({ post }: { post: Post }) {
   const { data: currentUser } = useGetMeQuery();
   const isOwnPost = !!(currentUser && post.author && currentUser.id === post.author.id);
   const [pendingComments, setPendingComments] = useState<Comment[]>([]);
+
+  const [likersModal, setLikersModal] = useState<{
+    isOpen: boolean;
+    targetId: string;
+    targetType: "post" | "comment" | "reply";
+  }>({
+    isOpen: false,
+    targetId: "",
+    targetType: "post",
+  });
+
+  const handleShowLikers = (targetId: string, targetType: "post" | "comment" | "reply") => {
+    setLikersModal({
+      isOpen: true,
+      targetId,
+      targetType,
+    });
+  };
 
   useEffect(() => {
     if (comments?.data) {
@@ -756,7 +793,11 @@ export function OriginalPostCard({ post }: { post: Post }) {
         ) : null}
       </div>
       <div className="_feed_inner_timeline_total_reacts _padd_r24 _padd_l24 _mar_b26">
-        <div className="_feed_inner_timeline_total_reacts_image">
+        <div 
+          className="_feed_inner_timeline_total_reacts_image"
+          style={{ cursor: "pointer" }}
+          onClick={() => handleShowLikers(post.id, "post")}
+        >
           {visibleReactImages.map((src, index) => (
             <img
               key={src}
@@ -893,13 +934,23 @@ export function OriginalPostCard({ post }: { post: Post }) {
                   </div>
                 )}
                 {visibleComments.map((comment) => (
-                  <CommentItem key={comment.id} comment={comment} />
+                  <CommentItem 
+                    key={comment.id} 
+                    comment={comment} 
+                    onClickLikers={handleShowLikers}
+                  />
                 ))}
               </>
             );
           })()}
         </div>
       ) : null}
+      <LikersModal
+        isOpen={likersModal.isOpen}
+        onClose={() => setLikersModal((prev) => ({ ...prev, isOpen: false }))}
+        targetId={likersModal.targetId}
+        targetType={likersModal.targetType}
+      />
     </div>
   );
 }
