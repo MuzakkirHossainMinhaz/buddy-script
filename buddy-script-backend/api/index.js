@@ -1,8 +1,8 @@
-import app from '../src/app.js';
-import { connectRedis } from '../src/config/redis.config.js';
-import '../src/utils/bigint-json.js';
+import app from '../dist/app.js';
+import { connectRedis } from '../dist/config/redis.config.js';
+import '../dist/utils/bigint-json.js';
 
-let redisReady: Promise<void> | null = null;
+let redisReady = null;
 
 function ensureRedisReady() {
   if (!redisReady) {
@@ -15,7 +15,7 @@ function ensureRedisReady() {
   return redisReady;
 }
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req, res) {
   await ensureRedisReady();
   return app(req, res);
 }
