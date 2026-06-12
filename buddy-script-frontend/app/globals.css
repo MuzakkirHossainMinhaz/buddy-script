@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800&display=swap');
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-poppins: 'Poppins';
 }
 
 @theme inline {
@@ -51,4 +54,27 @@ body {
     url('/assets/fonts/fa-brands-400.woff') format('woff'),
     url('/assets/fonts/fa-brands-400.ttf') format('truetype'),
     url('/assets/fonts/fa-brands-400.svg#fontawesome') format('svg');
+}
+
+._bs_react_count_solo {
+  margin-left: 0 !important;
+}
+
+._bs_post_stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+._bs_post_stats span {
+  color: var(--color7) !important;
+}
+
+._bs_post_stats b {
+  color: var(--color6);
+  font-weight: 500;
+}
+
+._bs_comment_react_active {
+  color: var(--color5) !important;
 }

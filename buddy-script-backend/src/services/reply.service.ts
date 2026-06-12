@@ -1,7 +1,7 @@
 import { prisma } from '../config/database.js';
 import { logger } from '../config/logger.config.js';
 import type { LikeTargetType } from '../generated/enums.js';
-import { ForbiddenError, NotFoundError } from '../utils/errors.js';
+import { ForbiddenError, NotFoundError, ValidationError } from '../utils/errors.js';
 import { sanitizeContent } from '../utils/helpers.js';
 import { visibilityService } from './visibility.service.js';
 
@@ -81,6 +81,10 @@ export class ReplyService {
 
       if (parentReply.commentId !== comment.id) {
         throw new NotFoundError('Parent reply');
+      }
+
+      if (parentReply.parentReplyId !== null) {
+        throw new ValidationError('Maximum reply depth of 3 layers reached');
       }
 
       parentReplyId = parentReply.id;

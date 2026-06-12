@@ -6,14 +6,14 @@ import { OriginalPostCard } from "@/components/feed/OriginalPostCard";
 import {
   useCreatePostMutation,
   useGetMeQuery,
-  useGetPostsQuery,
+  useGetMyPostsQuery,
   useLogoutMutation,
 } from "@/lib/api";
 import type { PrivacyType } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
-export default function FeedPage() {
+export default function MyPostsPage() {
   const router = useRouter();
   const [darkMode, setDarkMode] = useState(false);
   const [profileDrop, setProfileDrop] = useState(false);
@@ -23,7 +23,7 @@ export default function FeedPage() {
   const [postImage, setPostImage] = useState<File | null>(null);
   const [privacyType] = useState<PrivacyType>("public");
   const { data: currentUser, isError: isAuthError } = useGetMeQuery();
-  const { data: postsData, isLoading: isPostsLoading } = useGetPostsQuery({ limit: 20 });
+  const { data: postsData, isLoading: isPostsLoading } = useGetMyPostsQuery({ limit: 20 });
   const [createPost, { isLoading: isCreatingPost }] = useCreatePostMutation();
   const [logout] = useLogoutMutation();
 
@@ -74,7 +74,7 @@ export default function FeedPage() {
           </div>
           <div className="_layout_change_btn_ic1">
             <svg xmlns="http://www.w3.org/2000/svg" width="11" height="16" fill="none" viewBox="0 0 11 16">
-              <path fill="#fff" d="M2.727 14.977l.04-.498-.04.498zm-1.72-.49l.489-.11-.489.11zM3.232 1.212L3.514.8l-.282.413zM9.792 8a6.5 6.5 0 00-6.5-6.5v-1a7.5 7.5 0 017.5 7.5h-1zm-6.5 6.5a6.5 6.5 0 006.5-6.5h1a7.5 7.5 0 01-7.5 7.5v-1zm-.525-.02c.173.013.348.02.525.02v1c-.204 0-.405-.008-.605-.024l.08-.997zm-.261-1.83A6.498 6.498 0 005.792 7h1a7.498 7.498 0 01-3.791 6.52l-.495-.87zM5.792 7a6.493 6.493 0 00-2.841-5.374L3.514.8A7.493 7.493 0 016.792 7h-1zm-3.105 8.476c-.528-.042-.985-.077-1.314-.155-.316-.075-.746-.242-.854-.726l.977-.217c-.028-.124-.145-.09.106-.03.237.056.6.086 1.165.131l-.08.997zm.314-1.956c-.622.354-1.045.596-1.31.792a.967.967 0 00-.204.185c-.01.013.027-.038.009-.12l-.977.218a.836.836 0 01.144-.666c.112-.162.27-.3.433-.42.324-.24.814-.519 1.41-.858L3 13.52zM3.292 1.5a.391.391 0 00.374-.285A.382.382 0 003.514.8l-.563.826A.618.618 0 012.702.95a.609.609 0 01.59-.45v1z" />
+              <path fill="#fff" d="M2.727 14.977l.04-.498-.04.498zm-1.72-.49l.489-.11-.489.11zM3.232 1.212L3.514.8l-.282.413zM9.792 8a6.5 6.5 0 00-6.5-6.5v-1a7.5 7.5 0 017.5 7.5h-1zm-6.5 6.5a6.5 6.5 0 006.5-6.5h1a7.5 7.5 0 01-7.5 7.5v-1zm-.525-.02c.173.013.348.02.525.02v1c-.204 0-.405-.008-.605-.024l.08-.997zm-.261-1.83A6.498 6.498 0 005.792 7h1a7.498 7.498 0 01-3.791 6.52l-.495-.87zM5.792 7a6.493 6.493 0 00-2.841-5.374L3.514.8A7.493 7.493 0 016.792 7h-1zm-3.105 8.476c-.528-.042-.985-.077-1.314-.155-.316-.075-.746-.242-.854-.726l.977-.217c-.028-.124-.145-.09.106-.03.237.056.6.086 1.165.131l-.08.997zm-.261-1.83A6.498 6.498 0 002.792 13.52zM3.292 1.5a.391.391 0 00.374-.285A.382.382 0 003.514.8l-.563.826A.618.618 0 012.702.95a.609.609 0 01.59-.45v1z" />
             </svg>
           </div>
           <div className="_layout_change_btn_ic2">
@@ -109,7 +109,7 @@ export default function FeedPage() {
               </div>
               <ul className="navbar-nav mb-2 mb-lg-0 _header_nav_list ms-auto _mar_r8">
                 <li className="nav-item _header_nav_item">
-                  <a className="nav-link _header_nav_link_active _header_nav_link" aria-current="page" href="/">
+                  <a className="nav-link _header_nav_link" aria-current="page" href="/">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="21" fill="none" viewBox="0 0 18 21">
                       <path className="_home_active" stroke="#000" strokeWidth="1.5" strokeOpacity=".6" d="M1 9.924c0-1.552 0-2.328.314-3.01.313-.682.902-1.187 2.08-2.196l1.143-.98C6.667 1.913 7.732 1 9 1c1.268 0 2.333.913 4.463 2.738l1.142.98c1.179 1.01 1.768 1.514 2.081 2.196.314.682.314 1.458.314 3.01v4.846c0 2.155 0 3.233-.67 3.902-.669.67-1.746.67-3.901.67H5.57c-2.155 0-3.232 0-3.902-.67C1 18.002 1 16.925 1 14.77V9.924z" />
                       <path className="_home_active" stroke="#000" strokeOpacity=".6" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M11.857 19.341v-5.857a1 1 0 00-1-1H7.143a1 1 0 00-1 1v5.857" />
@@ -165,294 +165,6 @@ export default function FeedPage() {
                           </button>
                         </div>
                         <div className="_notifications_all">
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/friend-req.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                <span className="_notify_txt_link">
-                                  Steve Jobs
-                                </span>
-                                posted a link in your timeline.
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/profile-1.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                An admin changed the name of the group
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                                to
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/friend-req.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                <span className="_notify_txt_link">
-                                  Steve Jobs
-                                </span>
-                                posted a link in your timeline.
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/profile-1.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                An admin changed the name of the group
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                                to
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/friend-req.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                <span className="_notify_txt_link">
-                                  Steve Jobs
-                                </span>
-                                posted a link in your timeline.
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/profile-1.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                An admin changed the name of the group
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                                to
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/friend-req.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                <span className="_notify_txt_link">
-                                  Steve Jobs
-                                </span>
-                                posted a link in your timeline.
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/profile-1.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                An admin changed the name of the group
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                                to
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/friend-req.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                <span className="_notify_txt_link">
-                                  Steve Jobs
-                                </span>
-                                posted a link in your timeline.
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/profile-1.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                An admin changed the name of the group
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                                to
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/friend-req.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                <span className="_notify_txt_link">
-                                  Steve Jobs
-                                </span>
-                                posted a link in your timeline.
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/profile-1.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                An admin changed the name of the group
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                                to
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/friend-req.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                <span className="_notify_txt_link">
-                                  Steve Jobs
-                                </span>
-                                posted a link in your timeline.
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/profile-1.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                An admin changed the name of the group
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                                to
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/friend-req.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                <span className="_notify_txt_link">
-                                  Steve Jobs
-                                </span>
-                                posted a link in your timeline.
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="_notification_box">
-                            <div className="_notification_image">
-                              <img src="/assets/images/profile-1.png" alt="Image" className="_notify_img" />
-                            </div>
-                            <div className="_notification_txt">
-                              <p className="_notification_para">
-                                An admin changed the name of the group
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                                to
-                                <span className="_notify_txt_link">
-                                  Freelacer usa
-                                </span>
-                              </p>
-                              <div className="_nitification_time">
-                                <span>42 miniutes ago</span>
-                              </div>
-                            </div>
-                          </div>
                           <div className="_notification_box">
                             <div className="_notification_image">
                               <img src="/assets/images/friend-req.png" alt="Image" className="_notify_img" />
@@ -580,15 +292,6 @@ export default function FeedPage() {
                             </svg>
                           </a>
                         </form>
-                        {/* <div className="_header_mobile_toggle">
-												<form action="/mobileMenu.html">
-													<button type="submit" className="_header_mobile_btn_link" value="go to mobile menu">
-														<svg xmlns="http://www.w3.org/2000/svg" width="18" height="14" fill="none" viewBox="0 0 18 14">
-															<path stroke="#666" strokeLinecap="round" strokeWidth="1.5" d="M1 1h16M1 7h16M1 13h16"/>
-														</svg>													  
-													</button>
-												</form>
-											</div> */}
                       </div>
                     </div>
                   </div>
@@ -606,7 +309,7 @@ export default function FeedPage() {
                 <div className="col-xl-12 col-lg-12 col-md-12">
                   <ul className="_mobile_navigation_bottom_list">
                     <li className="_mobile_navigation_bottom_item">
-                      <a href="/" className="_mobile_navigation_bottom_link _mobile_navigation_bottom_link_active">
+                      <a href="/" className="_mobile_navigation_bottom_link">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="27" fill="none" viewBox="0 0 24 27">
                           <path className="_mobile_svg" fill="#000" fillOpacity=".6" stroke="#666666" strokeWidth="1.5" d="M1 13.042c0-2.094 0-3.141.431-4.061.432-.92 1.242-1.602 2.862-2.965l1.571-1.321C8.792 2.232 10.256 1 12 1c1.744 0 3.208 1.232 6.136 3.695l1.572 1.321c1.62 1.363 2.43 2.044 2.86 2.965.432.92.432 1.967.432 4.06v6.54c0 2.908 0 4.362-.92 5.265-.921.904-2.403.904-5.366.904H7.286c-2.963 0-4.445 0-5.365-.904C1 23.944 1 22.49 1 19.581v-6.54z" />
                           <path fill="#fff" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.07 18.497h5.857v7.253H9.07v-7.253z" />
@@ -633,7 +336,6 @@ export default function FeedPage() {
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                           <path className="_dark_svg" fill="#000" fillOpacity=".6" fillRule="evenodd" d="M12.002 0c3.208 0 6.223 1.239 8.487 3.489 4.681 4.648 4.681 12.211 0 16.86-2.294 2.28-5.384 3.486-8.514 3.486-1.706 0-3.423-.358-5.03-1.097-.474-.188-.917-.366-1.235-.366-.366.003-.859.171-1.335.334-.976.333-2.19.748-3.09-.142-.895-.89-.482-2.093-.149-3.061.164-.477.333-.97.333-1.342 0-.306-.149-.697-.376-1.259C-1 12.417-.032 7.011 3.516 3.49A11.96 11.96 0 0112.002 0zm.001 1.663a10.293 10.293 0 00-7.304 3.003A10.253 10.253 0 002.63 16.244c.261.642.514 1.267.514 1.917 0 .649-.225 1.302-.422 1.878-.163.475-.41 1.191-.252 1.349.156.16.881-.092 1.36-.255.576-.195 1.228-.42 1.874-.424.648 0 1.259.244 1.905.503 3.96 1.818 8.645.99 11.697-2.039 4.026-4 4.026-10.509 0-14.508a10.294 10.294 0 00-7.303-3.002zm4.407 9.607c.617 0 1.117.495 1.117 1.109 0 .613-.5 1.109-1.117 1.109a1.116 1.116 0 01-1.12-1.11c0-.613.494-1.108 1.11-1.108h.01zm-4.476 0c.616 0 1.117.495 1.117 1.109 0 .613-.5 1.109-1.117 1.109a1.116 1.116 0 01-1.121-1.11c0-.613.493-1.108 1.11-1.108h.01zm-4.477 0c.617 0 1.117.495 1.117 1.109 0 .613-.5 1.109-1.117 1.109a1.116 1.116 0 01-1.12-1.11c0-.613.494-1.108 1.11-1.108h.01z" clipRule="evenodd" />
                         </svg>
-                        <span className="_counting">2</span>
                       </a>
                     </li>
                     <div className="_header_mobile_toggle">
@@ -645,15 +347,6 @@ export default function FeedPage() {
                         </button>
                       </form>
                     </div>
-                    {/* <li className="_mobile_navigation_bottom_item">
-										<a href="profile.html" className="_mobile_navigation_bottom_link">
-											<svg xmlns="http://www.w3.org/2000/svg" width="29" height="28" fill="none" viewBox="0 0 29 28">
-												<g opacity=".6">
-												  <path className="_mobile_svg1 _dark_svg" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M23.999 24.5v-2.333a4.667 4.667 0 00-4.667-4.667H9.999a4.667 4.667 0 00-4.667 4.667V24.5M14.667 12.833a4.667 4.667 0 100-9.333 4.667 4.667 0 000 9.333z"/>
-												</g>
-											</svg>											  
-										</a>
-									</li> */}
                   </ul>
                 </div>
               </div>
@@ -704,7 +397,7 @@ export default function FeedPage() {
                           <a href="#0" className="_left_inner_area_explore_link">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="24" fill="none" viewBox="0 0 22 24">
                               <path fill="#666" d="M7.625 2c.315-.015.642.306.645.69.003.309.234.558.515.558h.928c1.317 0 2.402 1.169 2.419 2.616v.24h2.604c2.911-.026 5.255 2.337 5.377 5.414.005.12.006.245.004.368v4.31c.062 3.108-2.21 5.704-5.064 5.773-.117.003-.228 0-.34-.005a199.325 199.325 0 01-7.516 0c-2.816.132-5.238-2.292-5.363-5.411a6.262 6.262 0 01-.004-.371V11.87c-.03-1.497.48-2.931 1.438-4.024.956-1.094 2.245-1.714 3.629-1.746a3.28 3.28 0 01.342.005l3.617-.001v-.231c-.008-.676-.522-1.23-1.147-1.23h-.93c-.973 0-1.774-.866-1.785-1.937-.003-.386.28-.701.631-.705zm-.614 5.494h-.084C5.88 7.52 4.91 7.987 4.19 8.812c-.723.823-1.107 1.904-1.084 3.045v4.34c-.002.108 0 .202.003.294.094 2.353 1.903 4.193 4.07 4.08 2.487.046 5.013.046 7.55-.001.124.006.212.007.3.004 2.147-.05 3.86-2.007 3.812-4.361V11.87a5.027 5.027 0 00-.002-.291c-.093-2.338-1.82-4.082-4.029-4.082l-.07.002H7.209a4.032 4.032 0 00-.281-.004l.084-.001zm1.292 4.091c.341 0 .623.273.667.626l.007.098-.001 1.016h.946c.372 0 .673.325.673.725 0 .366-.253.669-.582.717l-.091.006h-.946v1.017c0 .4-.3.724-.673.724-.34 0-.622-.273-.667-.626l-.006-.098v-1.017h-.945c-.372 0-.674-.324-.674-.723 0-.367.254-.67.582-.718l.092-.006h.945v-1.017c0-.4.301-.724.673-.724zm7.058 3.428c.372 0 .674.324.674.724 0 .366-.254.67-.582.717l-.091.007h-.09c-.373 0-.674-.324-.674-.724 0-.367.253-.67.582-.717l.091-.007h.09zm-1.536-3.322c.372 0 .673.324.673.724 0 .367-.253.67-.582.718l-.091.006h-.09c-.372 0-.674-.324-.674-.724 0-.366.254-.67.582-.717l.092-.007h.09z" />
-                            </svg>Gaming</a> <span className="_left_inner_area_explore_link_txt">New</span>
+                          </svg>Gaming</a> <span className="_left_inner_area_explore_link_txt">New</span>
                         </li>
                         <li className="_left_inner_area_explore_item">
                           <a href="#0" className="_left_inner_area_explore_link">
@@ -849,7 +542,7 @@ export default function FeedPage() {
                       </div>
                       <div className="row">
                         <div className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col">
-                          <div className="_feed_inner_profile_story _b_radious6 ">
+                           <div className="_feed_inner_profile_story _b_radious6 ">
                             <div className="_feed_inner_profile_story_image">
                               <img src="/assets/images/card_ppl1.png" alt="Image" className="_profile_story_img" />
                               <div className="_feed_inner_story_txt">
@@ -1362,6 +1055,5 @@ export default function FeedPage() {
       {/* Main Layout Structure */}
       {/*Feed Section End*/}
     </div>
-  )
+  );
 }
-
