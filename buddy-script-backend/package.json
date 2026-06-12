@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx tsx watch src/server.ts",
-    "build": "npx tsc",
+    "build": "npm run prisma:generate && npx tsc",
     "start": "node dist/server.js",
     "prisma:migrate": "npx prisma migrate dev",
     "prisma:generate": "npx prisma generate",

@@ -53,6 +53,10 @@ const redisStore = new RedisStore({
 });
 
 async function connectRedis(): Promise<void> {
+  if (redisClient.isOpen) {
+    return;
+  }
+
   try {
     await redisClient.connect();
     logger.info('Redis session client connected successfully');
@@ -64,7 +68,9 @@ async function connectRedis(): Promise<void> {
 
 async function disconnectRedis(): Promise<void> {
   try {
-    await redisClient.disconnect();
+    if (redisClient.isOpen) {
+      await redisClient.disconnect();
+    }
     ioRedisClient.disconnect();
     logger.info('All Redis clients disconnected successfully');
   } catch (error) {

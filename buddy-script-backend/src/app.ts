@@ -14,7 +14,14 @@ import routes from './routes/index.js';
 
 const app = express();
 const isProduction = process.env.NODE_ENV === 'production';
-const requiredProductionEnv = ['DATABASE_URL', 'REDIS_URL', 'SESSION_SECRET'];
+const requiredProductionEnv = [
+  'DATABASE_URL',
+  'REDIS_URL',
+  'SESSION_SECRET',
+  'CLOUDINARY_CLOUD_NAME',
+  'CLOUDINARY_API_KEY',
+  'CLOUDINARY_API_SECRET',
+];
 
 if (isProduction) {
   const missingEnv = requiredProductionEnv.filter((name) => !process.env[name]);
@@ -30,7 +37,9 @@ const trustProxy = process.env.TRUST_PROXY
     : process.env.TRUST_PROXY === 'true'
       ? 1
       : Number(process.env.TRUST_PROXY)
-  : false;
+  : isProduction
+    ? 1
+    : false;
 app.set('trust proxy', trustProxy);
 
 // Security headers
@@ -72,6 +81,11 @@ app.use('/uploads', express.static(uploadsDir, {
 }));
 
 // Session middleware
+const sameSite = (process.env.SESSION_COOKIE_SAME_SITE || (isProduction ? 'none' : 'lax')) as
+  | 'lax'
+  | 'none'
+  | 'strict';
+
 app.use(
   session({
     store: redisStore,
@@ -82,7 +96,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'strict',
+      sameSite,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     },
   }),

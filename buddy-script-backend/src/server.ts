@@ -3,17 +3,7 @@ import app from './app.js';
 import { disconnectDatabase } from './config/database.js';
 import { logger } from './config/logger.config.js';
 import { connectRedis, disconnectRedis } from './config/redis.config.js';
-
-// BigInt JSON serialization safety net
-declare global {
-  interface BigInt {
-    toJSON(): string;
-  }
-}
-
-BigInt.prototype.toJSON = function () {
-  return this.toString();
-};
+import './utils/bigint-json.js';
 
 const PORT = parseInt(process.env.PORT || '5000', 10);
 

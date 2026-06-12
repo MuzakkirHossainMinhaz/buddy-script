@@ -1,0 +1,2 @@
+-- This migration duplicated an invalid default-removal migration that can fail
+-- when replayed against Prisma's shadow database. Keep it as a no-op.
