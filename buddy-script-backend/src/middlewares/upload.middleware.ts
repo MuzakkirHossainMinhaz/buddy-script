@@ -3,9 +3,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ValidationError } from '../utils/errors.js';
 
-export const uploadsDir = path.join(process.cwd(), 'src', 'uploads');
+const isProduction = process.env.NODE_ENV === 'production';
 
-fs.mkdirSync(uploadsDir, { recursive: true });
+export const uploadsDir = isProduction
+  ? '/tmp/buddy-script-uploads'
+  : path.join(process.cwd(), 'src', 'uploads');
+
+if (!isProduction) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 
