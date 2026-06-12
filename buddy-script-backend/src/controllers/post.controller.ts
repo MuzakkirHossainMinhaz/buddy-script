@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import type { PostPrivacy } from '../generated/enums.js';
+import { cloudinaryService } from '../services/cloudinary.service.js';
 import { likeService } from '../services/like.service.js';
 import { postService } from '../services/post.service.js';
 import {
@@ -64,7 +65,13 @@ export const getPost = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const createPost = async (req: Request, res: Response): Promise<void> => {
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : req.body.imageUrl;
+  let imageUrl = req.body.imageUrl;
+
+  if (req.file) {
+    // Upload image buffer directly to Cloudinary (stateless: no local disk writes)
+    imageUrl = await cloudinaryService.uploadImageBuffer(req.file.buffer);
+  }
+
   const post = await postService.createPost(req.user!.id, {
     ...req.body,
     imageUrl,

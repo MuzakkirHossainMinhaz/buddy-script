@@ -1,5 +1,4 @@
 import multer from 'multer';
-import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { ValidationError } from '../utils/errors.js';
@@ -10,15 +9,9 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 
 const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (_req, file, cb) => {
-    const extension = path.extname(file.originalname).toLowerCase();
-    cb(null, `${randomUUID()}${extension}`);
-  },
-});
+// Use memory storage for stateless cloud environment (Vercel compatibility)
+const storage = multer.memoryStorage();
+
 
 export const uploadPostImage = multer({
   storage,
