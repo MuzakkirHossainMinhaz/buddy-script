@@ -7,9 +7,10 @@ import {
   useCreatePostMutation,
   useGetMeQuery,
   useGetPostsQuery,
+  useLazyGetPostsQuery,
   useLogoutMutation,
 } from "@/lib/api";
-import type { PrivacyType } from "@/lib/types";
+import type { Post, PrivacyType } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 
@@ -27,8 +28,12 @@ export default function FeedPage() {
   const postImagePreviewUrlRef = useRef<string | null>(null);
   const { data: currentUser, isLoading: isAuthLoading, isError: isAuthError } = useGetMeQuery();
   const { data: postsData, isLoading: isPostsLoading } = useGetPostsQuery({ limit: 20 });
+  const [loadMorePosts, { isFetching: isLoadingMorePosts }] = useLazyGetPostsQuery();
   const [createPost, { isLoading: isCreatingPost }] = useCreatePostMutation();
   const [logout] = useLogoutMutation();
+  const [extraPosts, setExtraPosts] = useState<Post[]>([]);
+  const [nextPostsCursor, setNextPostsCursor] = useState<string | null>(null);
+  const [extraPostsBaseId, setExtraPostsBaseId] = useState<string | null>(null);
 
   const handleLogout = async () => {
     try {
@@ -88,6 +93,26 @@ export default function FeedPage() {
   }
 
   const currentUserName = currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : "Dylan Field";
+  const postsBaseId = postsData?.data[0]?.id ?? "empty";
+  const activeExtraPosts = extraPostsBaseId === postsBaseId ? extraPosts : [];
+  const activeNextPostsCursor = extraPostsBaseId === postsBaseId
+    ? nextPostsCursor
+    : postsData?.meta.nextCursor ?? null;
+  const visiblePosts = [...(postsData?.data ?? []), ...activeExtraPosts]
+    .filter((post, index, self) => self.findIndex((item) => item.id === post.id) === index);
+
+  const handleLoadMorePosts = async () => {
+    if (!activeNextPostsCursor || isLoadingMorePosts) return;
+
+    const response = await loadMorePosts({ limit: 20, cursor: activeNextPostsCursor }).unwrap();
+    setExtraPostsBaseId(postsBaseId);
+    setExtraPosts((existing) =>
+      [...(extraPostsBaseId === postsBaseId ? existing : []), ...response.data].filter(
+        (post, index, self) => self.findIndex((item) => item.id === post.id) === index,
+      ),
+    );
+    setNextPostsCursor(response.meta.nextCursor);
+  };
 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (postImagePreviewUrlRef.current) {
@@ -1212,8 +1237,22 @@ export default function FeedPage() {
                           </svg>
                         </div>
                       </div>
-                    ) : postsData?.data.length ? (
-                      postsData.data.map((post) => <OriginalPostCard key={post.id} post={post} />)
+                    ) : visiblePosts.length ? (
+                      <>
+                        {visiblePosts.map((post) => <OriginalPostCard key={post.id} post={post} />)}
+                        {activeNextPostsCursor ? (
+                          <div className="_feed_inner_timeline_post_area _b_radious6 _padd_b24 _padd_t24 _mar_b16" style={{ textAlign: "center" }}>
+                            <button
+                              type="button"
+                              className="_previous_comment_txt"
+                              onClick={handleLoadMorePosts}
+                              disabled={isLoadingMorePosts}
+                            >
+                              {isLoadingMorePosts ? "Loading..." : "Load more posts"}
+                            </button>
+                          </div>
+                        ) : null}
+                      </>
                     ) : (
                       <div className="_feed_inner_timeline_post_area _b_radious6 _padd_b24 _padd_t24 _mar_b16">
                         <div className="_feed_inner_timeline_content _padd_r24 _padd_l24">

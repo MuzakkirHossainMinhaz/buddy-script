@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className="h-full antialiased" data-scroll-behavior="smooth">
       <head>
         <link rel="icon" href="/assets/images/logo-copy.svg" />
         <link rel="stylesheet" href="/assets/fonts/flaticon/flaticon.css" />

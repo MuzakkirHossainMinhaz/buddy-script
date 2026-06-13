@@ -7,13 +7,15 @@ import {
   useGetCommentsQuery,
   useGetMeQuery,
   useGetRepliesQuery,
+  useLazyGetCommentsQuery,
+  useLazyGetRepliesQuery,
   useLikeCommentMutation,
   useLikePostMutation,
   useLikeReplyMutation,
   useUpdatePostMutation,
 } from "@/lib/api";
 import type { Comment, Post, User, Reply } from "@/lib/types";
-import { FormEvent, KeyboardEvent, useEffect, useState } from "react";
+import { FormEvent, KeyboardEvent, useState } from "react";
 import { LikersModal } from "./LikersModal";
 
 const nameOf = (user: Pick<User, "firstName" | "lastName">) =>
@@ -55,7 +57,6 @@ function ReplyItem({
   const [likeReply] = useLikeReplyMutation();
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [replyText, setReplyText] = useState("");
-  const [createReply] = useCreateReplyMutation();
 
   const handleReplyLike = () => {
     const currentLiked = optimisticLiked;
@@ -239,17 +240,38 @@ function CommentItem({
   const [replyText, setReplyText] = useState("");
   const [createReply] = useCreateReplyMutation();
   const { data: repliesData, isFetching } = useGetRepliesQuery({ commentId: comment.id }, { skip: !showReplies });
+  const [loadMoreReplies, { isFetching: isLoadingMoreReplies }] = useLazyGetRepliesQuery();
 
   const [pendingReplies, setPendingReplies] = useState<Reply[]>([]);
+  const [extraReplies, setExtraReplies] = useState<Reply[]>([]);
+  const [nextRepliesCursor, setNextRepliesCursor] = useState<string | null>(null);
+  const [extraRepliesBaseId, setExtraRepliesBaseId] = useState<string | null>(null);
   const { data: currentUser } = useGetMeQuery();
 
-  useEffect(() => {
-    if (repliesData?.data) {
-      setPendingReplies((prev) =>
-        prev.filter((pending) => !repliesData.data.some((r) => r.id === pending.id))
-      );
-    }
-  }, [repliesData?.data]);
+  const repliesBaseId = repliesData?.data[0]?.id ?? "empty";
+  const activeExtraReplies = extraRepliesBaseId === repliesBaseId ? extraReplies : [];
+  const activeNextRepliesCursor = extraRepliesBaseId === repliesBaseId
+    ? nextRepliesCursor
+    : repliesData?.meta.nextCursor ?? null;
+  const visibleReplies = [...(repliesData?.data || []), ...activeExtraReplies, ...pendingReplies]
+    .filter((reply, index, self) => self.findIndex((r) => r.id === reply.id) === index);
+
+  const handleLoadMoreReplies = async () => {
+    if (!activeNextRepliesCursor || isLoadingMoreReplies) return;
+
+    const response = await loadMoreReplies({
+      commentId: comment.id,
+      cursor: activeNextRepliesCursor,
+    }).unwrap();
+
+    setExtraRepliesBaseId(repliesBaseId);
+    setExtraReplies((existing) =>
+      [...(extraRepliesBaseId === repliesBaseId ? existing : []), ...response.data].filter(
+        (reply, index, self) => self.findIndex((r) => r.id === reply.id) === index,
+      ),
+    );
+    setNextRepliesCursor(response.meta.nextCursor);
+  };
 
   const handleCommentLike = () => {
     const currentLiked = optimisticLiked;
@@ -520,11 +542,9 @@ function CommentItem({
 
         {showReplies && (
           <div style={{ width: "calc(100% - 24px)" }}>
-            {[...(repliesData?.data || []), ...pendingReplies]
-              .filter((reply, index, self) => self.findIndex((r) => r.id === reply.id) === index)
+            {visibleReplies
               .filter(r => !r.parentReplyId).map((reply) => {
-                const childReplies = [...(repliesData?.data || []), ...pendingReplies]
-                  .filter((reply, index, self) => self.findIndex((r) => r.id === reply.id) === index)
+                const childReplies = visibleReplies
                   .filter(r => r.parentReplyId === reply.id);
 
                 return (
@@ -553,6 +573,18 @@ function CommentItem({
                   </div>
                 );
               })}
+            {activeNextRepliesCursor ? (
+              <div className="_previous_comment">
+                <button
+                  type="button"
+                  className="_previous_comment_txt"
+                  onClick={handleLoadMoreReplies}
+                  disabled={isLoadingMoreReplies}
+                >
+                  {isLoadingMoreReplies ? "Loading replies..." : "Load more replies"}
+                </button>
+              </div>
+            ) : null}
           </div>
         )}
       </div>
@@ -572,9 +604,13 @@ export function OriginalPostCard({ post }: { post: Post }) {
   const [createComment] = useCreateCommentMutation();
   const [updatePost] = useUpdatePostMutation();
   const { data: comments } = useGetCommentsQuery({ postId: post.id }, { skip: !showComments });
+  const [loadMoreComments, { isFetching: isLoadingMoreComments }] = useLazyGetCommentsQuery();
   const { data: currentUser } = useGetMeQuery();
   const isOwnPost = !!(currentUser && post.author && currentUser.id === post.author.id);
   const [pendingComments, setPendingComments] = useState<Comment[]>([]);
+  const [extraComments, setExtraComments] = useState<Comment[]>([]);
+  const [nextCommentsCursor, setNextCommentsCursor] = useState<string | null>(null);
+  const [extraCommentsBaseId, setExtraCommentsBaseId] = useState<string | null>(null);
 
   const [likersModal, setLikersModal] = useState<{
     isOpen: boolean;
@@ -594,13 +630,29 @@ export function OriginalPostCard({ post }: { post: Post }) {
     });
   };
 
-  useEffect(() => {
-    if (comments?.data) {
-      setPendingComments((prev) =>
-        prev.filter((pending) => !comments.data.some((c) => c.id === pending.id))
-      );
-    }
-  }, [comments?.data]);
+  const commentsBaseId = comments?.data[0]?.id ?? "empty";
+  const activeExtraComments = extraCommentsBaseId === commentsBaseId ? extraComments : [];
+  const activeNextCommentsCursor = extraCommentsBaseId === commentsBaseId
+    ? nextCommentsCursor
+    : comments?.meta.nextCursor ?? null;
+
+  const handleLoadMoreComments = async () => {
+    if (!activeNextCommentsCursor || isLoadingMoreComments) return;
+
+    const response = await loadMoreComments({
+      postId: post.id,
+      cursor: activeNextCommentsCursor,
+    }).unwrap();
+
+    setExtraCommentsBaseId(commentsBaseId);
+    setExtraComments((existing) =>
+      [...(extraCommentsBaseId === commentsBaseId ? existing : []), ...response.data].filter(
+        (comment, index, self) => self.findIndex((item) => item.id === comment.id) === index,
+      ),
+    );
+    setNextCommentsCursor(response.meta.nextCursor);
+    setShowAllComments(true);
+  };
   const imageUrl = assetUrl(post.imageUrl);
   const commentLabel = optimisticCommentCount > 1 ? "Comments" : "Comment";
   const visibleReactImages = reactImages.slice(0, Math.min(optimisticLikeCount, 5));
@@ -910,11 +962,12 @@ export function OriginalPostCard({ post }: { post: Post }) {
       {showComments ? (
         <div className="_timline_comment_main">
           {(() => {
-            const allComments = [...(comments?.data || []), ...pendingComments]
+            const allComments = [...(comments?.data || []), ...activeExtraComments, ...pendingComments]
               .filter((comment, index, self) => self.findIndex(c => c.id === comment.id) === index);
             
             const totalCount = allComments.length;
             const hasMoreThanTwo = totalCount > 2;
+            const canLoadMoreComments = Boolean(activeNextCommentsCursor);
             const visibleComments = !showAllComments && hasMoreThanTwo
               ? allComments.slice(totalCount - 2)
               : allComments;
@@ -927,9 +980,17 @@ export function OriginalPostCard({ post }: { post: Post }) {
                     <button
                       type="button"
                       className="_previous_comment_txt"
-                      onClick={() => setShowAllComments(true)}
+                      onClick={() => {
+                        setShowAllComments(true);
+                        if (canLoadMoreComments) {
+                          handleLoadMoreComments();
+                        }
+                      }}
+                      disabled={isLoadingMoreComments}
                     >
-                      View {previousCommentsCount} previous {previousCommentsCount === 1 ? "comment" : "comments"}
+                      {isLoadingMoreComments
+                        ? "Loading comments..."
+                        : `View ${previousCommentsCount}${canLoadMoreComments ? "+" : ""} previous ${previousCommentsCount === 1 ? "comment" : "comments"}`}
                     </button>
                   </div>
                 )}
@@ -940,6 +1001,18 @@ export function OriginalPostCard({ post }: { post: Post }) {
                     onClickLikers={handleShowLikers}
                   />
                 ))}
+                {showAllComments && canLoadMoreComments && (
+                  <div className="_previous_comment">
+                    <button
+                      type="button"
+                      className="_previous_comment_txt"
+                      onClick={handleLoadMoreComments}
+                      disabled={isLoadingMoreComments}
+                    >
+                      {isLoadingMoreComments ? "Loading comments..." : "Load more comments"}
+                    </button>
+                  </div>
+                )}
               </>
             );
           })()}
