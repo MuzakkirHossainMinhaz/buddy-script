@@ -1,12 +1,12 @@
 # Buddy Script: Project Decisions
 
-This file contains the practical decisions I made while building the project. These are not all architecture decisions, but they explain why I chose certain tools and implementation paths.
+This file explains the practical choices I made while building the project. I kept the lower-level architecture details in `ARCHITECTURE_DECISIONS.md`, and used this file for the tools, scope, and implementation choices around the project.
 
 ## Use of AI Coding Assistants
 
-I used Codex and Antigravity as coding assistants while working on this project. I used them to move faster on implementation, review ideas, generate or adjust boilerplate, and check parts of the code while I was building.
+I used Codex and Antigravity as coding assistants while working on this project. I used them for implementation support, reviewing ideas, checking edge cases, adjusting boilerplate, and helping me reason through parts of the code while I was building.
 
-The project decisions, feature scope, and final review were still my responsibility. I treated the tools as assistants, not as replacements for understanding the code or making the tradeoffs.
+I am mentioning this because I want to be transparent about my process. The project decisions, feature scope, tradeoffs, and final review were still my responsibility. I treated the tools as assistants, not as replacements for understanding the code or owning the implementation.
 
 ## Stateless Image Uploads
 
@@ -14,20 +14,20 @@ I wanted the project to stay deployable on Vercel or a similar platform, so I av
 
 The backend accepts an uploaded image, validates it, sends it to external storage, deletes the temporary local file, and stores only the final image URL in the database.
 
-That decision keeps the upload flow compatible with serverless-style deployment. Local disk is fine for temporary work during a request, but it should not be treated as permanent storage.
+This keeps the upload flow compatible with serverless-style deployment. Local disk is fine for temporary work during a request, but I did not want the app to depend on it as permanent storage.
 
 ## Why Next.js
 
 I used Next.js instead of plain React because this project is a social platform and may later need public pages such as profiles or individual posts. Those pages benefit from better routing, metadata, SEO, and share preview support.
 
-Next.js also made the setup simpler:
+Next.js also made the frontend setup simpler:
 
 - File-based routing, so I did not need `react-router-dom`.
 - Built-in app structure for pages and layouts.
 - Good environment variable and production build support.
 - Easy deployment path with Vercel.
 
-For the current assessment, the main feed is protected, so SEO is not the most important part yet. I still chose Next.js because it gives the project a better base if public-facing pages are added later.
+For the current assessment, the main feed is protected, so SEO is not the main benefit right now. I still chose Next.js because it gives the project a better base if public-facing pages are added later.
 
 ## Why PostgreSQL Instead of MongoDB
 
@@ -42,7 +42,7 @@ PostgreSQL is a good fit here because it gives:
 - Transactions for likes, comments, replies, and counter updates.
 - Strong indexing for feed and interaction queries.
 
-MongoDB could work for some feed systems, but for this assessment it would either duplicate data heavily or require more application-side consistency checks. SQL was the cleaner choice for the data shape I had.
+MongoDB could work for some feed systems, but for this assessment it would either duplicate data heavily or require more application-side consistency checks. SQL felt like the cleaner choice for this data shape.
 
 ## Why Express.js Instead of Nest.js
 
@@ -62,7 +62,7 @@ Nest.js is useful for larger applications, especially when a team needs modules,
 
 I used RTK Query because the feed has many small server-backed states: current user, posts, comments, replies, likes, and liker lists.
 
-RTK Query helped with request caching, loading states, and invalidating data after create/like/reply actions. Without it, I would have needed more manual state management inside the feed components.
+RTK Query helped with request caching, loading states, and invalidating data after create, like, comment, and reply actions. Without it, I would have needed more manual state management inside the feed components.
 
 ## Scope Control
 
@@ -79,4 +79,6 @@ The features I focused on were:
 - Showing who liked posts, comments, and replies.
 - Basic security and validation.
 
-That kept the project realistic for the assessment and avoided adding features that were not asked for.
+Some backend endpoints exist even where I did not add the full frontend flow. For example, the API includes support for actions like updating or deleting posts and updating comments. I added these endpoints to keep the backend resource model consistent while implementing the services, validation, authorization, and route structure.
+
+I kept those extra backend paths limited and did not expand the frontend just to expose every endpoint. That kept the project realistic for the assessment and avoided turning it into a larger product than requested.
