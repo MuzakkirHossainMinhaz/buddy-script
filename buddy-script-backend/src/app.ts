@@ -101,6 +101,7 @@ const sameSite = (process.env.SESSION_COOKIE_SAME_SITE || (isProduction ? 'none'
   | 'lax'
   | 'none'
   | 'strict';
+const sessionCookieDomain = process.env.SESSION_COOKIE_DOMAIN || undefined;
 
 app.use('/api', async (_req, _res, next) => {
   try {
@@ -122,6 +123,7 @@ app.use(
       httpOnly: true,
       secure: isProduction,
       sameSite,
+      domain: sessionCookieDomain,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     },
   }),

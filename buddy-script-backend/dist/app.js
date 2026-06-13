@@ -83,6 +83,7 @@ app.use('/uploads', express.static(uploadsDir, {
 }));
 // Session middleware
 const sameSite = (process.env.SESSION_COOKIE_SAME_SITE || (isProduction ? 'none' : 'lax'));
+const sessionCookieDomain = process.env.SESSION_COOKIE_DOMAIN || undefined;
 app.use('/api', async (_req, _res, next) => {
     try {
         await connectRedis();
@@ -102,6 +103,7 @@ app.use(session({
         httpOnly: true,
         secure: isProduction,
         sameSite,
+        domain: sessionCookieDomain,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     },
 }));

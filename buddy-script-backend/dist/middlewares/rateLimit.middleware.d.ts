@@ -5,7 +5,8 @@
 export declare const authRateLimiter: import("express-rate-limit").RateLimitRequestHandler;
 /**
  * General rate limiter for API endpoints.
- * 100 requests per 15-minute window.
+ * Development runs the frontend and API through the same localhost IP, so the
+ * default bucket is intentionally roomier there.
  */
 export declare const apiRateLimiter: import("express-rate-limit").RateLimitRequestHandler;
 //# sourceMappingURL=rateLimit.middleware.d.ts.map

@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://buddy-script-backend-nine.vercel.app/api/:path*"
+    }
+  ]
+}

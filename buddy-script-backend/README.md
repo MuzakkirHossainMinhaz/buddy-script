@@ -44,6 +44,8 @@ The API starts on `http://localhost:5000` by default.
 | `REDIS_URL` | Yes in production | Redis connection string |
 | `SESSION_SECRET` | Yes in production | Session signing secret |
 | `SESSION_NAME` | No | Cookie name |
+| `SESSION_COOKIE_SAME_SITE` | No | Cookie SameSite value, defaults to `none` in production |
+| `SESSION_COOKIE_DOMAIN` | No | Parent domain for sharing cookies across subdomains, for example `.example.com` |
 | `CORS_ORIGINS` | No | Comma-separated allowed origins |
 | `TRUST_PROXY` | No | Set to `true` or a hop count only when behind a trusted proxy |
 | `BCRYPT_ROUNDS` | No | Password hash cost, default `12` |

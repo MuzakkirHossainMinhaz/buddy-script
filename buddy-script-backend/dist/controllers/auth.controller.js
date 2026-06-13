@@ -41,7 +41,12 @@ export const logout = async (req, res) => {
                 resolve();
         });
     });
-    res.clearCookie(process.env.SESSION_NAME || 'sessionId');
+    res.clearCookie(process.env.SESSION_NAME || 'sessionId', {
+        domain: process.env.SESSION_COOKIE_DOMAIN || undefined,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: (process.env.SESSION_COOKIE_SAME_SITE || (process.env.NODE_ENV === 'production' ? 'none' : 'lax')),
+    });
     res.status(200).json({
         success: true,
         message: 'Logged out successfully',
